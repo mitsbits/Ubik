@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0-*",
+  "description": "Ubik.Domain.Core.NServiceBus Class Library",
+  "authors": [ "mitsbits" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "net46": { }
+  },
+  "dependencies": {
+    "NServiceBus": "5.2.14",
+    "Ubik.Domain.Core": "1.0.0-*"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0-*",
+  "description": "Ubik.Web.Client.Backoffice Class Library",
+  "authors": [ "mitsbits" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "net46": { }
+  },
+  "dependencies": {
+
+    "Ubik.Cache": "1.0.0-*",
+    "Ubik.Domain.Core": "1.0.0-*",
+    "Ubik.Infra": "1.0.0-*",
+    "Ubik.Web.Basis": "1.0.0-*",
+    "Ubik.Web.Components.AntiCorruption": "1.0.0-*",
+    "Ubik.Web.Membership": "1.0.0-*"
+  }
+}

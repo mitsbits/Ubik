@@ -1,0 +1,93 @@
+﻿@using Ubik.Web.Membership
+@using Ubik.Web.Membership.Contracts
+@using Ubik.Web.Membership.ViewModels
+@model IHasRolesToSelect
+@{
+    var operations = new SystemClaims.Operations();
+    var availableClaims = Model.AvailableRoles.SelectMany(r => r.AvailableClaims).ToArray();
+    var resources = availableClaims.Where(x => x.Type == SystemClaims.OperationToResourceClaimType).Select(x => x.Value.Split(new[] { '|' }).Last()).Distinct().OrderBy(x => x).ToList();
+
+    Func<string, IEnumerable<RoleClaimViewModel>> claimsForGroup = (@group) => availableClaims.Where(x => string.Join(" - ", x.ResourceGroups) == @group).ToList();
+    Func<string, IEnumerable<string>> resourcesForGroup = (@group) => availableClaims.Where(x => x.Type == SystemClaims.OperationToResourceClaimType && string.Join(" - ", x.ResourceGroups) == @group).Select(x => x.Value.Split(new[] { '|' }).Last()).Distinct().OrderBy(x => x).ToList();
+
+    Html.AddBackofficeBottom("UserAdministration/users");
+
+    var isCreateNewUser = Model as NewUserViewModel != null;
+    if (isCreateNewUser)
+    {
+        Model.AvailableRoles.Single(x => x.Name == SystemRoles.Backoffice).IsSelected = true;
+    }
+
+    var claimGroups = Model.AvailableRoles.SelectMany(r => r.AvailableClaims).Select(c => string.Join(" - ", c.ResourceGroups)).Distinct().ToList();
+
+}
+<div class="box box-solid">
+    <div class="box-header">
+        <h3 class="box-title">User Roles</h3>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            @for (var index = 0; index < Model.AvailableRoles.Count(); index++)
+            {
+                var role = Model.AvailableRoles[index];
+                <div class="col-md-4">
+                    @Html.HiddenFor(m => m.AvailableRoles[index].Name)
+                    @Html.HiddenFor(m => m.AvailableRoles[index].RoleId)
+                    @Html.HiddenFor(m => m.AvailableRoles[index].IsSytemRole)
+                    @Html.CheckBoxFor(m => m.AvailableRoles[index].IsSelected, new { @class = "option-role", data_id = role.Name })
+                    <label for="@Html.IdFor(m => m.AvailableRoles[index].IsSelected)">
+                        @if (role.IsSytemRole)
+                        {
+                            <i class="fa fa-desktop right text-info" rel="tooltip" title="System Role"></i>
+                        }
+                        @if (role.IsPersisted)
+                        {
+                            <i class="fa fa-database right text-info" rel="tooltip" title="Persisted Role"></i>
+                        }
+                        <span>@role.Name</span>
+                    </label>
+                </div>
+            }
+        </div>
+    </div>
+
+    @foreach (var @group in claimGroups)
+    {
+
+        <div class="box-body no-padding">
+            <div class="box-header">
+                <h3 class="box-title">@group</h3>
+            </div>
+            <table class="table table-bordered table-striped">
+                <tr>
+                    <th>
+                    </th>
+                    @foreach (var operation in operations)
+                    {
+                        <th>
+                            <span>@operation</span>
+                        </th>
+                    }
+                </tr>
+
+                @foreach (var resource in resourcesForGroup(@group))
+                {
+                    <tr>
+                        <td> <strong> @resource</strong></td>
+                        @foreach (var operation in operations)
+                        {
+                            var claim = availableClaims.FirstOrDefault(x => x.Value == string.Format("{0}|{1}", operation, resource));
+                            var index = Array.IndexOf(availableClaims, claim);
+                            <td data-id="@availableClaims[index].Value">
+                                @Html.HiddenFor(m => availableClaims[index].Value)
+                                @Html.HiddenFor(m => availableClaims[index].Type)
+                                <input type="checkbox" name="@Html.NameFor(m => availableClaims[index].IsSelected)" data-id="@availableClaims[index].Value" class="option-claim" />
+                            </td>
+                        }
+                    </tr>
+                }
+            </table>
+        </div>
+
+    }
+</div>

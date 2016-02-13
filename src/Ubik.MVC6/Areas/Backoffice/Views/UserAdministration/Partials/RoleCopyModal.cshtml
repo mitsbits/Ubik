@@ -1,0 +1,39 @@
+﻿<div class="modal fade" id="copy-role-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Source: <span id="roleTitleName"></span></h4>
+            </div>
+            <div class="modal-body">
+                <!--form start-->
+                @using (Html.BeginForm("CopyRole", "UserAdministration", FormMethod.Post, new { role = "form", id = "copy-role-form" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="box-body">
+
+                        <div class="form-group hidden">
+                            <input type="hidden" id="Name" name="Name" />
+                        </div>
+
+                        <div class="box-footer">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input type="text" id="Target" name="Target" class="form-control" />
+
+                                    <div class="input-group-btn">
+                                        <button type="submit" class="btn btn-primary">Copy to new Role</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <!--form end-->
+            </div>
+            <div class="modal-footer clearfix">
+            </div>
+        </div>
+    </div>
+</div>

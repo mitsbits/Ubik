@@ -1,0 +1,71 @@
+﻿@using Ubik.Web.Membership.ViewModels
+@model IEnumerable<UserRowViewModel>
+@{
+    Html.AddBackofficeBottom("UserAdministration/users");
+    var _model = Model.OrderBy(x => x.UserName).ToArray();
+}
+
+
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="box box-default">
+                <div class="box-header">
+                    <h3 class="box-title">
+                        Users
+                    </h3>
+                    <div class="pull-right">
+                        <a href="@Url.Action("new-user", "UserAdministration")" class="btn btn-primary">Create a new User</a>
+                    </div>
+                </div><!-- /.box-header -->
+                <div class="box-body table-responsive">
+                    <table class="table table-hover table-condensed" id="users-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40px">#</th>
+                                <th>Name</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (var i = 0; i < _model.Count(); i++)
+                                {
+                                    var user = _model[i];
+                                <tr>
+                                    <td>
+
+                                        <span class="text-primary">@((i + 1).ToString("000"))</span>
+                                    </td>
+                                    <td>
+                                        @{
+                                    var lockStateClass = (user.IsLockedOut) ? "text-red" : "text-green";
+                                    var lockStateClassIcon = (user.IsLockedOut) ? "fa fa-lock" : "fa fa-unlock";
+                                        }
+                                        <i class="@lockStateClassIcon @lockStateClass"></i>
+                                        <span class="@lockStateClass">
+                                            @Html.ActionLink(user.UserName, "Users", "UserAdministration", new { id = user.UserId, area = "Backoffice" }, null)
+                                        </span>
+                                    </td>
+                                    <td>
+
+                                        @if (user.IsLockedOut)
+                                            {
+                                            @Html.ActionLink("Unlock", "UnlockUser", "UserAdministration", new { id = user.UserId, area = "Backoffice" }, new { @class = "btn btn-sm btn-success" })
+                                            }
+                                            else
+                                            {
+                                            @Html.ActionLink("Lock", "LockUser", "UserAdministration", new { id = user.UserId, area = "Backoffice" }, new { @class = "btn btn-sm btn-warning" })
+                                            }
+                                    </td>
+                                </tr>
+                                }
+                        </tbody>
+                    </table>
+                </div><!-- /.box-body -->
+            </div>
+        </div>
+        <div class="col-md-6">
+        </div>
+    </div>
+</section>

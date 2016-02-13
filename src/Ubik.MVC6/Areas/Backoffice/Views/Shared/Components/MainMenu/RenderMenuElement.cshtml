@@ -1,0 +1,32 @@
+﻿@using Ubik.Web.Basis.Navigation.Contracts
+@using Ubik.Web.Client.Backoffice
+@using Ubik.Web.Basis.Navigation
+@model Tuple<BackofficeNavigationElement, NavigationGroupDto>
+@{
+    var element = Model.Item1;
+    var @group = Model.Item2;
+    var hasChildernClass = (element.HasChildren && element.Depth == 1 && false) ? "treeview" : string.Empty;
+}
+
+<li id="itm_@element.Id.ToString()" class="@hasChildernClass">
+    @switch (element.Role)
+    {
+        case NavigationElementRole.Anchor:
+            <a href="@Url.Content("~/backoffice/" + element.Href.TrimStart('/'))" target="@element.AnchorTarget">
+                <i class="@element.IconCssClass"></i>
+                <span>@element.Display</span>
+            </a>
+            break;
+        case NavigationElementRole.Label:
+            <a href="#">
+                <i class="@element.IconCssClass"></i>
+                <span>@element.Display</span>
+            </a>
+            break;
+        default:
+            <span>@element.Display</span>
+            break;
+    }
+    @Html.Partial("~/Areas/Backoffice/Views/Shared/Components/MainMenu/RenderChildren", Model)
+
+</li>

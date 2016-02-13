@@ -1,0 +1,24 @@
+﻿@using Ubik.Web.Auth.ViewModels
+@model UserLockedStateViewModel
+@{
+    Model.RedirectURL = Request.RawUrl;
+}
+
+@helper RenderUnlock()
+{
+    <button type="submit" class="btn btn-sm btn-success">Unlock</button>
+}
+
+@helper RenderLock()
+{
+    <button type="submit" class="btn btn-sm btn-warning">Lock</button>
+}
+
+@using (Html.BeginForm(Model.IsLocked ? "UnlockUser" : "LockUser", "UserAdministration", FormMethod.Post, new { role = "form" }))
+{
+
+    @Html.HiddenFor(m => m.UserId)
+    @Html.HiddenFor(m => m.RedirectURL)
+    @(Model.IsLocked ? RenderUnlock() : RenderLock())
+
+}

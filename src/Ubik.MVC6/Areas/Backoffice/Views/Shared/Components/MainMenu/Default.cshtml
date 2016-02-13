@@ -1,0 +1,28 @@
+﻿@using Ubik.Web.Basis.Navigation.Contracts
+@using Ubik.Web.Client.Backoffice
+@using Ubik.Web.Basis.Navigation
+@model IMenuProvider<INavigationElements<int>>
+
+<ul class="sidebar-menu">
+    <li class="header">MAIN NAVIGATION</li>
+
+    @foreach (var category in Model.Raw.Select(x => x.Group).Distinct().OrderBy(x => x.Weight))
+    {
+        <li id="@category.Key" class="treeview">
+            <a href="#">
+                <i class="@category.IconCssClass"></i>
+                <span>@category.Display</span>
+                <i class="fa fa-angle-left pull-right"></i>
+            </a>
+            <ul class="treeview-menu" id="@category.Key">
+                @foreach (var item in Model.Menu.Cast<object>().Select(menuItem => menuItem as BackofficeNavigationElement).Where(item => item.Group.Key == category.Key))
+                {
+                    @Html.Partial("~/Areas/Backoffice/Views/Shared/Components/MainMenu/RenderMenuElement.cshtml", new Tuple<BackofficeNavigationElement, NavigationGroupDto>(item, category))
+                }
+            </ul>
+        </li>
+    }
+
+
+    @Html.Partial("~/Areas/Backoffice/Views/Shared/Components/MainMenu/DemoMenu.cshtml")
+</ul>

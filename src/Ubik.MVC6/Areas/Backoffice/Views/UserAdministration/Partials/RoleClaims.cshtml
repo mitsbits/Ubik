@@ -1,0 +1,61 @@
+﻿@using Ubik.Web.Membership
+@using Ubik.Web.Membership.ViewModels
+@model RoleViewModel
+
+@{
+    var operations = new SystemClaims.Operations();
+    var resources = Model.AvailableClaims.Where(x => x.Type == SystemClaims.OperationToResourceClaimType).Select(x => x.Value.Split(new[] { '|' }).Last()).Distinct().OrderBy(x => x).ToList();
+    Func<string, IEnumerable<RoleClaimViewModel>> claimsForGroup = (@group) => Model.AvailableClaims.Where(x => string.Join(" - ", x.ResourceGroups) == @group).ToList();
+    Func<string, IEnumerable<string>> resourcesForGroup = (@group) => Model.AvailableClaims.Where(x => x.Type == SystemClaims.OperationToResourceClaimType && string.Join(" - ", x.ResourceGroups) == @group).Select(x => x.Value.Split(new[] { '|' }).Last()).Distinct().OrderBy(x => x).ToList();
+    var claimGroups = Model.AvailableClaims.Select(c => string.Join(" - ", c.ResourceGroups)).Distinct().ToList();
+
+}
+<div class="box box-solid">
+    <div class="box-header">
+        <h3 class="box-title">Operations on Resources</h3>
+    </div>
+    @foreach (var @group in claimGroups)
+    {
+        <div class="box-body no-padding">
+            <div class="box-header">
+                <h3 class="box-title">@group</h3>
+            </div>
+            <table class="table table-bordered table-striped">
+                <tr>
+                    <th>
+                    </th>
+                    @foreach (var operation in operations)
+                    {
+                        <th>
+                            <span>@operation</span>
+                        </th>
+                    }
+                </tr>
+                @foreach (var resource in resourcesForGroup(@group))
+                {
+                    <tr>
+                        <td> <strong> @resource</strong></td>
+                        @foreach (var operation in operations)
+                        {
+                            var claim = Model.AvailableClaims.FirstOrDefault(x => x.Value == string.Format("{0}|{1}", operation, resource));
+                            var index = Array.IndexOf(Model.AvailableClaims, claim);
+                            <td data-id="@Model.AvailableClaims[index].Value">
+                                <input type="hidden" asp-for="AvailableClaims[index].Value" />
+                                <input type="hidden" asp-for="AvailableClaims[index].Type" />
+                                @if (Model.IsSytemRole)
+                                {
+                                    <input type="checkbox" asp-for="AvailableClaims[index].IsSelected" disabled />
+                                }
+                                else
+                                {
+                                    <input type="checkbox" asp-for="AvailableClaims[index].IsSelected" />
+
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+            </table>
+        </div>
+    }
+</div>

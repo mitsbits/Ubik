@@ -1,0 +1,13 @@
+﻿@using Ubik.Web.Membership.ViewModels
+    @{
+        if (Model.GetType() == typeof(RoleViewModel))
+        {
+            var detail = Model as RoleViewModel;
+            await Html.RenderPartialAsync("~/Areas/Backoffice/Views/UserAdministration/Partials/RoleDetails.cshtml", detail);
+        }
+        else
+        {
+            var rows = Model as IEnumerable<RoleViewModel>;
+            await Html.RenderPartialAsync("~/Areas/Backoffice/Views/UserAdministration/Partials/RoleList.cshtml", rows);
+        }
+    }

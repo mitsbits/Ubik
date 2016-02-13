@@ -1,0 +1,33 @@
+{
+  "version": "1.0.0-*",
+  "description": "Ubik.Infra Class Library",
+  "authors": [ "mitsbits" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "net46": {
+      "dependencies": {
+        "System.Runtime.Serialization.Xml": "4.1.0-beta-23516"
+      },
+      "frameworkAssemblies": {
+        "System.XML": "4.0.0.0"
+      }
+    },
+    "dotnet5.4": {
+      "dependencies": {
+        "Microsoft.CSharp": "4.0.1-beta-23516",
+        "System.Collections": "4.0.11-beta-23516",
+        "System.Linq": "4.0.1-beta-23516",
+        "System.Runtime": "4.0.21-beta-23516",
+        "System.Threading": "4.0.11-beta-23516",
+        "System.Xml.XmlDocument": "4.0.1-beta-23516"
+      }
+    }
+  },
+  "dependencies": {
+    "Newtonsoft.Json": "6.0.6",
+    "System.Linq.Queryable": "4.0.1-beta-23516",
+    "System.Xml.XmlSerializer": "4.0.11-beta-23516"
+  }
+}

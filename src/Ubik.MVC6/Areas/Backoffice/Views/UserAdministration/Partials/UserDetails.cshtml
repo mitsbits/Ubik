@@ -1,0 +1,61 @@
+﻿@using Ubik.Web.Membership.ViewModels
+@model UserViewModel
+
+
+
+    <section class="content">
+        <div class="row">
+
+            <div class="col-md-6">
+                <div class="box box-primary">
+                    @using (Html.BeginForm("UpdateUser", "UserAdministration", FormMethod.Post, new { role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                    <!-- left column -->
+
+                        <div class="box-body">
+
+                            <div class="form-group hidden">
+                                @Html.LabelFor(m => m.UserId)
+                                @Html.HiddenFor(m => m.UserId, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.UserId, "", new { @class = "" })
+                            </div>
+                            <div class="form-group">
+
+                                <div class="input-group ">
+                                    <span class="input-group-addon">
+                                        @{
+                        var lockStateClass = (Model.IsLockedOut) ? "text-red" : "text-green";
+                        var lockStateClassIcon = (Model.IsLockedOut) ? "fa fa-lock" : "fa fa-unlock";
+                                        }
+                                        <i class="@lockStateClassIcon @lockStateClass"></i>
+                                        <span class="@lockStateClass">
+                                            @Html.LabelFor(m => m.UserName)
+                                        </span>
+                                    </span>
+                                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", @readonly = "true" })
+                                    <span class="input-group-btn">
+                                        @(Model.IsLockedOut ?
+                                          Html.ActionLink("Unlock", "UnlockUser", "UserAdministration", new { id = Model.UserId, area = "Backoffice", redirectUrl = ViewContext.HttpContext.Request.Path }, new { @class = "btn  btn-success" }) :
+                                          Html.ActionLink("Lock", "LockUser", "UserAdministration", new { id = Model.UserId, area = "Backoffice", redirectUrl = ViewContext.HttpContext.Request.Path }, new { @class = "btn  btn-warning" })
+                                        )
+                                    </span>
+                                </div>
+                                @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "" })
+                            </div>
+                            <div class="form-group">
+                                @Html.Partial("~/Areas/Backoffice/Views/UserAdministration/Partials/UserRoles.cshtml", Model)
+                            </div>
+                        </div>
+                        <div class="box-footer clearfix">
+                            <div class="form-group ">
+                                <button type="submit" class="btn btn-primary pull-right">Submit</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                @Html.Partial("~/Areas/Backoffice/Views/UserAdministration/Partials/UserChangePassword.cshtml", new UserChangPasswordViewModel() { NewPassword = string.Empty, UserId = Model.UserId, RedirectURL = ViewContext.HttpContext.Request.Path })
+            </div>
+        </div>
+    </section><!-- /.content -->

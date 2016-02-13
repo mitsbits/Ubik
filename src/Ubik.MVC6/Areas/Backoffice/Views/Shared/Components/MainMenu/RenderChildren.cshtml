@@ -1,0 +1,17 @@
+﻿@using Ubik.Web.Basis.Navigation.Contracts
+@using Ubik.Web.Client.Backoffice
+@using Ubik.Web.Basis.Navigation
+@model Tuple<BackofficeNavigationElement, NavigationGroupDto>
+@{
+    var element = Model.Item1;
+    var @group = Model.Item2;
+}
+    @if (element.HasChildren)
+    {
+        <ul id="grp_@element.Id" class="strip-list-style">
+            @foreach (var child in from object subitem in element.Children select subitem as BackofficeNavigationElement)
+            {
+                @Html.Partial("~/Areas/Backoffice/Views/Shared/Components/MainMenu/RenderMenuElement.cshtml", new Tuple<BackofficeNavigationElement, NavigationGroupDto>(child, @group))
+            }
+        </ul>
+    }

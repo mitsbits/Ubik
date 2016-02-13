@@ -1,0 +1,23 @@
+{
+  "version": "1.0.0-*",
+  "description": "Ubik.Web.Components.AntiCorruption Class Library",
+  "authors": [ "mitsbits" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "net46": {
+      "dependencies": {
+        "Ubik.Web.EF": "1.0.0-*",
+        "Ubik.Web.Membership": "1.0.0-*"
+      }
+    }
+  },
+  "dependencies": {
+    "Mehdime.Entity": "1.0.0",
+    "Ubik.Infra": "1.0.0-*",
+    "Ubik.Web.Basis": "1.0.0-*",
+    "Ubik.Web.BuildingBlocks": "1.0.0-*",
+    "Ubik.Web.Components": "1.0.0-*"
+  }
+}

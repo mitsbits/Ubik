@@ -1,0 +1,16 @@
+﻿{
+  "version": "1.0.0-*",
+  "description": "Ubik.EF6 Class Library",
+  "authors": [ "mitsbits" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "net46": { }
+  },
+  "dependencies": {
+    "EntityFramework": "6.1.3",
+    "Mehdime.Entity": "1.0.0",
+    "Ubik.Infra": "1.0.0-*"
+  }
+}

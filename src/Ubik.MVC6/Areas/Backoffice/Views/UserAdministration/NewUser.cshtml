@@ -1,0 +1,51 @@
+﻿@using Ubik.Web.Membership.ViewModels
+@model NewUserViewModel
+
+
+    <section class="content">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="box box-primary">
+                    @using (Html.BeginForm("CreateUser", "UserAdministration", FormMethod.Post, new { role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                                <!-- left column -->
+
+                        <div class="box-body">
+
+                            <div class="form-group hidden">
+                                @Html.LabelFor(m => m.UserId)
+                                @Html.HiddenFor(m => m.UserId, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.UserId, "", new { @class = "" })
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">@Html.LabelFor(m => m.UserName)</span>
+                                    @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                                </div>
+                                @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "" })
+                            </div>
+
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon">@Html.LabelFor(m => m.Password)</span>
+                                    @Html.TextBoxFor(m => m.Password, new { @class = "form-control" })
+                                </div>
+                                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "" })
+                            </div>
+
+                            <div class="form-group">
+                                @Html.Partial("~/Areas/Backoffice/Views/UserAdministration/Partials/UserRoles.cshtml", Model)
+                            </div>
+
+                            <div class="box-footer clearfix">
+                                <div class="form-group ">
+                                    <button type="submit" class="btn btn-primary pull-right">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>

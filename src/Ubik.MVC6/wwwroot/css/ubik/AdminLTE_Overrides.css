@@ -1,0 +1,36 @@
+﻿form {
+    margin-bottom: 10px;
+}
+
+ul .strip-list-style {
+    list-style: none !important;
+}
+
+.form-group .form-control.input-validation-error {
+    border-color: #f56954 !important;
+    box-shadow: none;
+}
+
+.form-group span.field-validation-error {
+    color: #f56954;
+}
+
+.table-responsive {
+    overflow-x: hidden;
+}
+
+.box .box-header div {
+    padding: 10px;
+}
+
+.box .box-header .btn-primary {
+    color: #fff;
+}
+
+.alert-pending {
+    background-color: #f9f9f9;
+    border-color: #f9f9f9;
+    color: #333;
+}
+
+#feedbackModal div.modal-header{ border: none;}

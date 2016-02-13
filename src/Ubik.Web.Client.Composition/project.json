@@ -1,0 +1,26 @@
+﻿{
+  "version": "1.0.0-*",
+  "description": "Ubik.Web.Client.Composition Class Library",
+  "authors": [ "mitsbits" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "net46": {
+      "frameworkAssemblies": {
+        "System.Configuration": "4.0.0.0"
+      }
+    }
+  },
+  "dependencies": {
+    "NServiceBus": "5.2.14",
+    "Ubik.Cache": "1.0.0-*",
+    "Ubik.Domain.Core": "1.0.0-*",
+    "Ubik.Domain.Core.NServiceBus": "1.0.0-*",
+    "Ubik.EF6": "1.0.0-*",
+    "Ubik.Web.Client.Backoffice": "1.0.0-*",
+    "Ubik.Web.Components.AntiCorruption": "1.0.0-*",
+    "Ubik.Web.EF": "1.0.0-*",
+    "Ubik.Web.Membership": "1.0.0-*"
+  }
+}
