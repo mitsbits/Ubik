@@ -1,0 +1,19 @@
+﻿@using Ubik.Web.Components.AntiCorruption.ViewModels.Devices
+@model DeviceViewModel
+<div class="box  box-default">
+    <div class="box-header">
+        <h3 class="box-title">Sections</h3>
+        <div class="box-tools">
+            <button data-widget="collapse" class="btn btn-box-tool" type="button">
+                <i class="fa fa-minus"></i>
+            </button>
+
+        </div>
+    </div>
+    <div class="box-body">
+        @using (Html.BeginForm("UpdateSection", "Devices", FormMethod.Post, new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+        }
+    </div>
+</div>

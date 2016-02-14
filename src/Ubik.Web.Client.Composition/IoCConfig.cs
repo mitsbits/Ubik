@@ -137,7 +137,7 @@ namespace Ubik.Web.Client.Composition
         private static void WireUpCms(IServiceCollection services)
         {
             services.AddScoped<IPersistedTextualRepository, PersistedTextualRepository>();
-            services.AddScoped<ICRUDRespoditory<PersistedDevice>, PersistedDeviceRepository>();
+            services.AddScoped<IPersistedDeviceRepository, PersistedDeviceRepository>();
             services.AddScoped<ICRUDRespoditory<PersistedSection>, PersistedSectionRepository>();
             services.AddScoped<IPersistedTaxonomyDivisionRepository, PersistedTaxonomyDivisionRepository>();
             services.AddScoped<IPersistedTaxonomyElementRepository, PersistedTaxonomyElementRepository>();

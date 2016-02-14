@@ -67,7 +67,7 @@ namespace Ubik.Web.EF.Components
                     .HasMany(x => x.Sections)
                     .WithOptional()
                     .HasForeignKey(s => s.DeviceId);
-                Property(x => x.Id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+                Property(x => x.Id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             }
         }
 

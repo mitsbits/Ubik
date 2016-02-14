@@ -48,8 +48,8 @@ namespace Ubik.Web.Components.Domain
         {
             if (Sections.Any(s => !s.Id.Equals(section.Id)))
                 throw new InvariantException(
-string.Format("Device:{0} section with id {1} exists. Add fails.",
-Id, section.Id));
+                string.Format("Device:{0} section with id {1} exists. Add fails.",
+               Id, section.Id));
             Sections.Add(section);
         }
 
@@ -87,13 +87,13 @@ Id, sectionId));
         {
             if (Sections.Any(s => s.Id.Equals(sectionId)))
                 throw new InvariantException(
-string.Format("Device:{0} section with id {1} exists. Set section flavor fails.",
-Id, sectionId));
+                    string.Format("Device:{0} section with id {1} exists. Set section flavor fails.",
+                    Id, sectionId));
             var section = Sections.Single(s => s.Id.Equals(sectionId));
             if (section != null && section.ForFlavor == flavor)
                 throw new InvariantException(
-string.Format("Device:{0} flavor already has value of {1} for section with id {2}. Set flavor fails.",
-Id, flavor, sectionId));
+                    string.Format("Device:{0} flavor already has value of {1} for section with id {2}. Set flavor fails.",
+                    Id, flavor, sectionId));
             if (section != null) section.SetForFlavor(flavor);
         }
     }

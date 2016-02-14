@@ -1,0 +1,13 @@
+﻿@using Ubik.Web.Components.AntiCorruption.ViewModels.Devices
+@{
+    if (Model.GetType() == typeof(DeviceViewModel))
+    {
+        var detail = Model as DeviceViewModel;
+        await Html.RenderPartialAsync("~/Areas/Backoffice/Views/Devices/Partials/DeviceDetails.cshtml", detail);
+    }
+    else
+    {
+        var rows = Model as IEnumerable<DeviceViewModel>;
+        await Html.RenderPartialAsync("~/Areas/Backoffice/Views/Devices/Partials/DeviceList.cshtml", rows);
+    }
+}

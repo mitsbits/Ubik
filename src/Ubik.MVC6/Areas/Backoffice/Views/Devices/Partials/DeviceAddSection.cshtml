@@ -1,0 +1,63 @@
+﻿@using Ubik.Web.Components.AntiCorruption.ViewModels.Devices
+@model SectionViewModel
+@{
+    var _deviceId = int.Parse(ViewContext.RouteData.Values["id"].ToString());
+
+}
+<div class="box  box-default collapsed-box">
+    <div class="box-header">
+        <h3 class="box-title">New Section</h3>
+        <div class="box-tools">
+            <button data-widget="collapse" class="btn btn-box-tool" type="button">
+                <i class="fa fa-plus"></i>
+            </button>
+
+        </div>
+    </div>
+
+    @using (Html.BeginForm("UpdateSection", "Devices", FormMethod.Post, new { role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        <div class="box-body">
+
+            <div class="form-group hidden">
+                @Html.LabelFor(m => m.DeviceId)
+                @Html.HiddenFor(m => m.DeviceId, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.DeviceId, "", new { @class = "" })
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon">@Html.LabelFor(m => m.FriendlyName)</span>
+                    @Html.TextBoxFor(m => m.FriendlyName, new { @class = "form-control" })
+                </div>
+                @Html.ValidationMessageFor(m => m.FriendlyName, "", new { @class = "" })
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon">@Html.LabelFor(m => m.Identifier)</span>
+                    @Html.TextBoxFor(m => m.Identifier, new { @class = "form-control" })
+                </div>
+                @Html.ValidationMessageFor(m => m.Identifier, "", new { @class = "" })
+            </div>
+            <div class="form-group">
+                @*TODO: fix this html filed*@
+                <div class="">
+
+                    <label class="radio-inline"><input type="radio" name="@Html.NameFor(m => m.ForFlavor)" asp-for="ForFlavor" value="Empty">Empty</label>
+                    <label class="radio-inline"><input type="radio" name="@Html.NameFor(m => m.ForFlavor)" asp-for="ForFlavor" value="List">List</label>
+                    <label class="radio-inline"><input type="radio" name="@Html.NameFor(m => m.ForFlavor)" asp-for="ForFlavor" value="Details">Details</label>
+                </div>
+                @Html.ValidationMessageFor(m => m.ForFlavor, "", new { @class = "" })
+            </div>
+            <div class="form-group">
+
+            </div>
+        </div>
+            <div class="box-footer clearfix">
+                <div class="form-group ">
+                    <button type="submit" class="btn btn-default pull-right">Submit</button>
+                </div>
+            </div>
+    }
+
+</div>

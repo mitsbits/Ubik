@@ -23,7 +23,7 @@
       <cssclass>fa fa-file-code-o</cssclass>
     </icon>
     <elements>
-      <element display="Layouts" href="/devices" role="anchor" target="_self">
+      <element display="Layouts" href="/devices/layouts" role="anchor" target="_self">
         <icon>
           <cssclass>fa fa-file-code-o</cssclass>
         </icon>

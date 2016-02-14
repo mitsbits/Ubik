@@ -21,7 +21,7 @@ namespace Ubik.Web.Client.Backoffice.Controllers
             _deviceViewModels = deviceViewModels;
         }
 
-        public Task<ActionResult> LayOuts(int? id)
+        public Task<ActionResult> Layouts(int? id)
         {
             if (!id.HasValue) return AllDevices();
 
@@ -30,17 +30,20 @@ namespace Ubik.Web.Client.Backoffice.Controllers
 
         private async Task<ActionResult> NewDevice()
         {
+            SetContentPage(new BackofficeContent() { Title = "Layouts", Subtitle = "create a template for pages" });
             return View(await _deviceViewModels.DeviceModel(0));
         }
 
         private async Task<ActionResult> OneDeviceById(int value)
         {
             var model = await _deviceViewModels.DeviceModel(value);
+            SetContentPage(new BackofficeContent() { Title = string.Format( "Layouts: {0}", model.FriendlyName), Subtitle = "template for pages" });
             return View(model);
         }
 
         private async Task<ActionResult> AllDevices()
         {
+            SetContentPage(new BackofficeContent() { Title = "Layouts", Subtitle = "template for pages" });
             return View(await _deviceViewModels.DeviceModels());
         }
 
@@ -58,12 +61,12 @@ namespace Ubik.Web.Client.Backoffice.Controllers
                 }
                 await _deviceViewModels.Execute(model);
                 AddRedirectMessage(ServerResponseStatus.SUCCESS, string.Format("Device '{0}' {1}!", model.FriendlyName, (isNew) ? "created" : "updated"));
-                return RedirectToAction("Layouts", "Devices", new { id = model.Id });
+                return RedirectToAction("layouts", "devices", new { id = model.Id });
             }
             catch (Exception ex)
             {
                 AddRedirectMessage(ex);
-                return RedirectToAction("Layouts", "Devices", null);
+                return RedirectToAction("layouts", "devices", null);
             }
         }
 

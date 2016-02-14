@@ -26,7 +26,7 @@ namespace Ubik.EF6
             var entity = entry.Entity;
             var entityName = entity.GetType().Name;
 
-            var seqName = SeqName(entity);
+            var seqName = SeqName(entity.GetType());
             var id = GetNextId(seqName);
 
             var objectContext = ((IObjectContextAdapter)this).ObjectContext;
@@ -54,10 +54,10 @@ namespace Ubik.EF6
             return id;
         }
 
-        private static string SeqName(object entity)
+        private static string SeqName(Type entity)
         {
-            var seqName = entity.GetType().Name;
-            var baseType = entity.GetType().BaseType;
+            var seqName = entity.Name;
+            var baseType = entity.BaseType;
             while (baseType?.GetInterface(typeof(ISequenceBase).Name, false) != null)
             {
                 seqName = baseType.Name;
@@ -70,7 +70,7 @@ namespace Ubik.EF6
             foreach (var entry in from entry in ChangeTracker.
                                   Entries().Where(e => e.State == EntityState.Added)
                                   let entity = entry.Entity as ISequenceBase
-                                  where entity != null
+                                  where entity != null && entity.Id == default(int)
                                   select entry)
             {
                 Next(entry);
@@ -89,6 +89,27 @@ namespace Ubik.EF6
         {
             NextIds();
             return base.SaveChangesAsync(cancellationToken);
+        }
+
+
+
+        public Task<int> GetNext<T>(T entity) where T : ISequenceBase
+        {
+            var entityName = entity.GetType().Name;
+            var seqName = SeqName(entity.GetType());
+            var nextId = GetNextId(seqName);
+            return Task.FromResult(nextId);
+        }
+
+        public Task<int> GetNext(Type entityType)
+        {
+            if (!typeof(ISequenceBase).IsAssignableFrom(entityType))
+                    throw new ApplicationException(string.Format("{0} does not implement {1}",
+                        entityType.AssemblyQualifiedName, typeof(ISequenceBase).AssemblyQualifiedName));
+            var entityName = entityType.Name;
+            var seqName = SeqName(entityType);
+            var nextId = GetNextId(seqName);
+            return Task.FromResult(nextId);
         }
 
         #endregion Overrides

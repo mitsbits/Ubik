@@ -1,0 +1,44 @@
+﻿@using Ubik.Web.Components.AntiCorruption.ViewModels.Devices
+@model IEnumerable<DeviceViewModel>
+@{
+    Html.AddBackofficeBottom("Devices/layouts");
+    var _model = Model.ToArray();
+}
+<div class="row">
+    <div class="col-md-6">
+        <div class="box ">
+            <div class="box-header">
+                <h3 class="box-title">
+                    
+                </h3>
+                <div class="pull-right">
+                    <a href="@Url.Action("layouts", "devices", new { id = 0 })" class="btn btn-default">Create a new Layout</a>
+                </div>
+            </div><!-- /.box-header -->
+            <div class="box-body table-responsive">
+                <table class="table table-hover table-condensed" id="layouts-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px">#</th>
+                            <th>Name</th>
+                            <th>Display Mode</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (var i = 0; i < _model.Count(); i++)
+                        {
+                            var item = _model[i];
+                            <tr>
+                                <td>@((i + 1).ToString("000"))</td>
+                                <td><a href="@Url.Action("layouts", "devices", new { id= item.Id })">@item.FriendlyName</a></td>
+                                <td>@item.Flavor</td>
+                                <td><a href="@Url.Action("DeleteLayout", "Devices", new {id = item.Id})" class="btn btn-warning btn-sm">Delete</a></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div><!-- /.box-body -->
+        </div>
+    </div>
+</div>

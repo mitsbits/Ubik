@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using Ubik.Infra.Contracts;
 using Ubik.Web.BuildingBlocks.Contracts;
 using Ubik.Web.Components.Contracts;
 using Ubik.Web.EF.Components;
+using Ubik.Web.EF.Components.Contracts;
 
 namespace Ubik.Web.Components.AntiCorruption.ViewModels.Devices
 {
@@ -35,6 +37,19 @@ namespace Ubik.Web.Components.AntiCorruption.ViewModels.Devices
         public DeviceViewModel()
             : base()
         {
+
+
+        }
+
+        public IEnumerable<string> FlavorOptions
+        {
+            get
+            {
+                foreach (var o in Enum.GetValues(typeof(DeviceRenderFlavor)))
+                {
+                    yield return o.ToString();
+                }
+            }
         }
 
         public IEnumerable<IModuleDescriptor> AvailableModules { get; set; }
@@ -78,9 +93,9 @@ namespace Ubik.Web.Components.AntiCorruption.ViewModels.Devices
 
     public class DeviceViewModelCommand : IViewModelCommand<DeviceSaveModel>
     {
-        private readonly ICRUDRespoditory<PersistedDevice> _persistedDeviceRepo;
+        private readonly IPersistedDeviceRepository _persistedDeviceRepo;
 
-        public DeviceViewModelCommand(ICRUDRespoditory<PersistedDevice> persistedDeviceRepo)
+        public DeviceViewModelCommand(IPersistedDeviceRepository persistedDeviceRepo)
         {
             _persistedDeviceRepo = persistedDeviceRepo;
         }
@@ -99,7 +114,9 @@ namespace Ubik.Web.Components.AntiCorruption.ViewModels.Devices
             else
             {
                 data = new PersistedDevice() { FriendlyName = model.FriendlyName, Flavor = model.Flavor, Path = model.Path };
+                data.Id = await _persistedDeviceRepo.GetNext();
                 await _persistedDeviceRepo.CreateAsync(data);
+                model.Id = data.Id;
             }
         }
     }

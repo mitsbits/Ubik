@@ -83,6 +83,7 @@
     <Build Include="dbo\Tables\Textuals.sql" />
     <Build Include="dbo\Views\DeviceProjections.sql" />
     <Build Include="dbo\Views\TaxonomyElementRecursions.sql" />
+    <Build Include="dbo\Sequences\PersistedDevice.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LocalCompare.scmp" />

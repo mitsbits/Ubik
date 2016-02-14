@@ -11,7 +11,7 @@ namespace Ubik.Web.EF.Components
         public virtual ComponentStateFlavor ComponentStateFlavor { get; set; }
     }
 
-    public class PersistedContent : PersistedComponent, ISequenceBase
+    public class PersistedContent : PersistedComponent
     {
         public PersistedContent()
         {
@@ -27,7 +27,7 @@ namespace Ubik.Web.EF.Components
         public virtual ICollection<PersistedTag> Tags { get; set; }
     }
 
-    public class PersistedTag : PersistedComponent, ISequenceBase
+    public class PersistedTag : PersistedComponent
     {
         public PersistedTag()
         {
@@ -49,7 +49,7 @@ namespace Ubik.Web.EF.Components
         public virtual string Slug { get; set; }
     }
 
-    public class PersistedDevice
+    public class PersistedDevice : ISequenceBase
     {
         public PersistedDevice()
         {

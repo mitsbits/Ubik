@@ -1,6 +1,7 @@
 ﻿/// <autosync enabled="true" />
 /// <reference path="../gulpfile.js" />
 /// <reference path="js/site.js" />
+/// <reference path="js/ubik/backoffice/devices/layouts.js" />
 /// <reference path="js/ubik/backoffice/useradministration/roles.js" />
 /// <reference path="js/ubik/backoffice/useradministration/users.js" />
 /// <reference path="lib/admin-lte/dist/js/app.js" />
