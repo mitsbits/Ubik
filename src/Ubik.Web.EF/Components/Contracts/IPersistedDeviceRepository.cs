@@ -9,4 +9,8 @@ namespace Ubik.Web.EF.Components.Contracts
    public interface IPersistedDeviceRepository : ICRUDRespoditory<PersistedDevice>, ISequenceRepository<PersistedDevice>
     {
     }
+
+    public interface IPersistedSectionRepository : ICRUDRespoditory<PersistedSection>, ISequenceRepository<PersistedSection>
+    {
+    }
 }

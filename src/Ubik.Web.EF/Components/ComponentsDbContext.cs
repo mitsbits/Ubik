@@ -80,7 +80,7 @@ namespace Ubik.Web.EF.Components
                     .HasMany(x => x.Slots)
                     .WithOptional()
                     .HasForeignKey(s => new { s.SectionId });
-                Property(x => x.Id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+                Property(x => x.Id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
             }
         }
 

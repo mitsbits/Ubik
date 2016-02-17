@@ -138,7 +138,7 @@ namespace Ubik.Web.Client.Composition
         {
             services.AddScoped<IPersistedTextualRepository, PersistedTextualRepository>();
             services.AddScoped<IPersistedDeviceRepository, PersistedDeviceRepository>();
-            services.AddScoped<ICRUDRespoditory<PersistedSection>, PersistedSectionRepository>();
+            services.AddScoped<IPersistedSectionRepository, PersistedSectionRepository>();
             services.AddScoped<IPersistedTaxonomyDivisionRepository, PersistedTaxonomyDivisionRepository>();
             services.AddScoped<IPersistedTaxonomyElementRepository, PersistedTaxonomyElementRepository>();
 

@@ -1,7 +1,7 @@
 ﻿@using Ubik.Web.Components.AntiCorruption.ViewModels.Devices
 @model SectionViewModel
 @{
-    var _deviceId = int.Parse(ViewContext.RouteData.Values["id"].ToString());
+    //var _deviceId = int.Parse(ViewContext.RouteData.Values["id"].ToString());
 
 }
 <div class="box  box-default collapsed-box">
@@ -40,9 +40,8 @@
                 @Html.ValidationMessageFor(m => m.Identifier, "", new { @class = "" })
             </div>
             <div class="form-group">
-                @*TODO: fix this html filed*@
+                @*TODO: fix this html field*@
                 <div class="">
-
                     <label class="radio-inline"><input type="radio" name="@Html.NameFor(m => m.ForFlavor)" asp-for="ForFlavor" value="Empty">Empty</label>
                     <label class="radio-inline"><input type="radio" name="@Html.NameFor(m => m.ForFlavor)" asp-for="ForFlavor" value="List">List</label>
                     <label class="radio-inline"><input type="radio" name="@Html.NameFor(m => m.ForFlavor)" asp-for="ForFlavor" value="Details">Details</label>

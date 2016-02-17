@@ -68,7 +68,7 @@ namespace Ubik.Web.EF.Components
         public ICollection<PersistedSection> Sections { get; set; }
     }
 
-    public class PersistedSection
+    public class PersistedSection : ISequenceBase
     {
         public PersistedSection()
         {

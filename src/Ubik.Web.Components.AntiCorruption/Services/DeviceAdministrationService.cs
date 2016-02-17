@@ -23,7 +23,7 @@ namespace Ubik.Web.Components.AntiCorruption.Services
     {
         private readonly IDbContextScopeFactory _dbContextScopeFactory;
         private readonly IPersistedDeviceRepository _persistedDeviceRepo;
-        private readonly ICRUDRespoditory<PersistedSection> _persistedSectionRepo;
+        private readonly IPersistedSectionRepository _persistedSectionRepo;
 
         private readonly IViewModelBuilder<PersistedDevice, DeviceViewModel> _deviceBuilder;
         private readonly IViewModelCommand<DeviceSaveModel> _deviceCommand;
@@ -35,7 +35,7 @@ namespace Ubik.Web.Components.AntiCorruption.Services
 
         private readonly IResident _resident;
 
-        public DeviceAdministrationService(IDbContextScopeFactory dbContextScopeFactory, IPersistedDeviceRepository persistedDeviceRepo, IViewModelCommand<DeviceSaveModel> deviceCommand, IViewModelCommand<SectionSaveModel> sectionCommand, ICRUDRespoditory<PersistedSection> persistedSectionRepo, IResident resident)
+        public DeviceAdministrationService(IDbContextScopeFactory dbContextScopeFactory, IPersistedDeviceRepository persistedDeviceRepo, IViewModelCommand<DeviceSaveModel> deviceCommand, IViewModelCommand<SectionSaveModel> sectionCommand, IPersistedSectionRepository persistedSectionRepo, IResident resident)
         {
             _dbContextScopeFactory = dbContextScopeFactory;
             _persistedDeviceRepo = persistedDeviceRepo;

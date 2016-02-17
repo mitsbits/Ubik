@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Ubik.Infra.Contracts;
 using Ubik.Web.EF.Components;
+using Ubik.Web.EF.Components.Contracts;
 
 namespace Ubik.Web.Components.AntiCorruption.ViewModels.Devices
 {
@@ -50,9 +51,9 @@ namespace Ubik.Web.Components.AntiCorruption.ViewModels.Devices
 
     public class SectionViewModelCommand : IViewModelCommand<SectionSaveModel>
     {
-        private readonly ICRUDRespoditory<PersistedSection> _persistedSectionRepo;
+        private readonly IPersistedSectionRepository _persistedSectionRepo;
 
-        public SectionViewModelCommand(ICRUDRespoditory<PersistedSection> persistedSectionRepo)
+        public SectionViewModelCommand(IPersistedSectionRepository persistedSectionRepo)
         {
             _persistedSectionRepo = persistedSectionRepo;
         }
@@ -70,6 +71,7 @@ namespace Ubik.Web.Components.AntiCorruption.ViewModels.Devices
             else
             {
                 data = new PersistedSection() { FriendlyName = model.FriendlyName, DeviceId = model.DeviceId, ForFlavor = model.ForFlavor, Identifier = model.Identifier };
+                data.Id = await _persistedSectionRepo.GetNext();
                 await _persistedSectionRepo.CreateAsync(data);
                 model.SectionId = data.Id;
             }
