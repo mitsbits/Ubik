@@ -1,5 +1,9 @@
 ﻿@using Ubik.Web.Components.AntiCorruption.ViewModels.Devices
 @model DeviceViewModel
+@{ 
+    var _sections = Model.Sections.ToArray();
+    Func<int, string> _activeRow = (i) => (Model.SelectedSectionId == i) ? "active" : string.Empty;
+}
 <div class="box  box-default">
     <div class="box-header">
         <h3 class="box-title">Sections</h3>
@@ -10,10 +14,29 @@
 
         </div>
     </div>
-    <div class="box-body">
-        @using (Html.BeginForm("UpdateSection", "Devices", FormMethod.Post, new { role = "form" }))
-        {
-            @Html.AntiForgeryToken()
-        }
+    <div class="box-body table-responsive">
+        <table class="table table-hover table-condensed" id="devicesections-table">
+            <thead>
+                <tr>
+                    <th style="width: 40px">#</th>
+                    <th>Name</th>
+                    <th>Display Mode</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (var i = 0; i < _sections.Count(); i++)
+                {
+                    var item = _sections[i];
+                    <tr class="@_activeRow(item.SectionId)">
+                        <td>@((i + 1).ToString("000"))</td>
+                        <td><a href="@Url.Action("layouts", "devices", new { id = item.DeviceId,  item.SectionId })">@item.FriendlyName</a></td>
+                        <td>@item.ForFlavor </td>
+                        <td><a href="@Url.Action("DeleteLayout", "Devices", new {id = item.SectionId})" class="btn btn-warning btn-sm">Delete</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
+
 </div>

@@ -9,7 +9,6 @@ namespace Ubik.Web.Client.System.BuildingBlocks
         public abstract string Summary { get; }
         public virtual string ModuleGroup { get { return "System"; } }
         public abstract ModuleType ModuleType { get; }
-
         public abstract BasePartialModule Default();
     }
 }

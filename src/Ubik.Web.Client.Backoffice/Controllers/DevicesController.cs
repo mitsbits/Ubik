@@ -21,23 +21,26 @@ namespace Ubik.Web.Client.Backoffice.Controllers
             _deviceViewModels = deviceViewModels;
         }
 
-        public Task<ActionResult> Layouts(int? id)
+        public Task<ActionResult> Layouts(int? id, int? sectionId)
         {
             if (!id.HasValue) return AllDevices();
 
-            return id.Value > default(int) ? OneDeviceById(id.Value) : NewDevice();
+            return id.Value > default(int) ? OneDeviceById(id.Value, (sectionId??0)) : NewDevice();
         }
 
         private async Task<ActionResult> NewDevice()
         {
             SetContentPage(new BackofficeContent() { Title = "Layouts", Subtitle = "create a template for pages" });
-            return View(await _deviceViewModels.DeviceModel(0));
+            var model = await _deviceViewModels.DeviceModel(0);
+            model.SelectedSectionId = default(int);
+            return View(model);
         }
 
-        private async Task<ActionResult> OneDeviceById(int value)
+        private async Task<ActionResult> OneDeviceById(int value, int sectionId)
         {
             var model = await _deviceViewModels.DeviceModel(value);
-            SetContentPage(new BackofficeContent() { Title = string.Format( "Layouts: {0}", model.FriendlyName), Subtitle = "template for pages" });
+            model.SelectedSectionId = sectionId;
+            SetContentPage(new BackofficeContent() { Title = string.Format( "Layouts: {0}", model.FriendlyName), Subtitle = (model.SelectedSection != null)? string.Format("Section: {0}", model.SelectedSection.FriendlyName): string.Empty });
             return View(model);
         }
 

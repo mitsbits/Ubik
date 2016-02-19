@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.0.0-*",
   "description": "Ubik.Web.Client.Composition Class Library",
   "authors": [ "mitsbits" ],
@@ -18,7 +18,12 @@
     "Ubik.Domain.Core": "1.0.0-*",
     "Ubik.Domain.Core.NServiceBus": "1.0.0-*",
     "Ubik.EF6": "1.0.0-*",
+    "Ubik.Infra": "1.0.0-*",
+    "Ubik.Web.Basis": "1.0.0-*",
+    "Ubik.Web.BuildingBlocks": "1.0.0-*",
     "Ubik.Web.Client.Backoffice": "1.0.0-*",
+    "Ubik.Web.Client.System": "1.0.0-*",
+    "Ubik.Web.Components": "1.0.0-*",
     "Ubik.Web.Components.AntiCorruption": "1.0.0-*",
     "Ubik.Web.EF": "1.0.0-*",
     "Ubik.Web.Membership": "1.0.0-*"

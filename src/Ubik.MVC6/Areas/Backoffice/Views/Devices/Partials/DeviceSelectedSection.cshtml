@@ -1,0 +1,26 @@
+﻿@using Ubik.Web.Components.AntiCorruption.ViewModels.Devices
+@using Ubik.Web.Components.AntiCorruption.Contracts
+@model DeviceViewModel
+@{ 
+    var _model = Model.SelectedSection;
+    var shouldShow = _model != null;
+}
+@if (shouldShow)
+{
+    <div class="box  box-default">
+        <div class="box-header">
+            <h3 class="box-title">@_model.FriendlyName</h3>
+            <div class="box-tools">
+                <button data-widget="collapse" class="btn btn-box-tool" type="button">
+                    <i class="fa fa-minus"></i>
+                </button>
+
+            </div>
+        </div>
+        <div class="box-body">
+
+        </div>
+
+    </div>
+
+}

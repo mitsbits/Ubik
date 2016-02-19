@@ -53,6 +53,16 @@ namespace Ubik.Web.Components.AntiCorruption.ViewModels.Devices
         }
 
         public IEnumerable<IModuleDescriptor> AvailableModules { get; set; }
+
+        public int SelectedSectionId { get; set; }
+
+        public SectionViewModel SelectedSection
+        {
+            get
+            {
+                return Sections.FirstOrDefault(x => x.SectionId == SelectedSectionId);
+            }
+        }
     }
 
     public class DeviceViewModelBuilder : IViewModelBuilder<PersistedDevice, DeviceViewModel>

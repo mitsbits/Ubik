@@ -58,7 +58,8 @@ namespace Ubik.Web.Client.Composition
             {
                 if (!AppDomain.CurrentDomain.GetAssemblies().Any(a => a.FullName == name.FullName))
                 {
-                    LoadReferencedAssembly(Assembly.Load(name));
+                    if (name.Name.StartsWith("Ubik"))
+                        LoadReferencedAssembly(Assembly.Load(name));
                 }
             }
             _asmbls = AppDomain.CurrentDomain.GetAssemblies();
@@ -122,6 +123,8 @@ namespace Ubik.Web.Client.Composition
             services.AddSingleton<ICacheProvider, MemoryDefaultCacheProvider>();
             services.AddSingleton<IModuleDescovery, ModuleDescovery>();
 
+            //hack
+            var hack = new System.BuildingBlocks.Partials.Views.PageBody();
             var moduleDescriptors = _asmbls
                 .SelectMany(a => a.GetTypes())
                 .Where(t => t.GetInterfaces().Any(i => i == typeof(IModuleDescriptor)) && !t.IsAbstract);
@@ -220,14 +223,14 @@ namespace Ubik.Web.Client.Composition
 
             //var builder = new ContainerBuilder();
             //builder.Populate(services);
-       
+
 
             //var containerConfig = new NServiceBusLocator(builder);
             //busConfiguration.UseContainer(containerConfig);
 
 
 
-           // var container = builder.Build();
+            // var container = builder.Build();
 
             busConfiguration.EnableInstallers();
 
