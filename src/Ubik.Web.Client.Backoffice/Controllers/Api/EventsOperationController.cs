@@ -28,10 +28,6 @@ namespace Ubik.Web.Client.Backoffice.Controllers.Api
 
             if (type == typeof(RolePersisted)) await Handle(@event as RolePersisted);
 
-
-
-       
-
             return Ok();
         }
 

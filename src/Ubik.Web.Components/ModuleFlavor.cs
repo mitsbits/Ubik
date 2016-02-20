@@ -24,6 +24,8 @@ namespace Ubik.Web.Components
             return _flavorDescription;
         }
 
+        public string Flavor { get { return ToString(); } }
+
         public static ModuleType Parse(string flavorDescription)
         {
             if (Dict.Keys.Contains(flavorDescription))

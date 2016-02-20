@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Ubik.Web.Components;
 using Ubik.Web.Components.Contracts;
 using Ubik.Web.Components.Domain;
+using System.Linq;
+using Ubik.Web.Components.DTO;
 
 namespace Ubik.Web.Client.System.BuildingBlocks.Partials.Views
 {
@@ -35,9 +38,17 @@ namespace Ubik.Web.Client.System.BuildingBlocks.Partials.Views
 
         public BasePartialModule Default()
         {
-            if (_defaultInstance != null) return _defaultInstance;
-            _defaultInstance = new PageBody();
-            return _defaultInstance;
+            if (_defaultInstance == null) _defaultInstance = new PageBody();
+            return _defaultInstance.Clone();
         }
+
+        public BasePartialModule Clone()
+        {
+
+            return new PageBody(FriendlyName, ViewPath, Parameters.Cast<Tiding>().ToDictionary(x => x.Key, x => x.Value as object));
+
+
+        }
+
     }
 }

@@ -37,8 +37,6 @@ namespace Ubik.Web.Components.AntiCorruption.ViewModels.Devices
         public DeviceViewModel()
             : base()
         {
-
-
         }
 
         public IEnumerable<string> FlavorOptions

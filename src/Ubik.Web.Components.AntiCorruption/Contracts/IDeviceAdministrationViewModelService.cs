@@ -13,5 +13,7 @@ namespace Ubik.Web.Components.AntiCorruption.Contracts
         Task Execute(DeviceSaveModel model);
 
         Task Execute(SectionSaveModel model);
+
+        Task<BasePartialModule> Transform(SlotViewModel config);
     }
 }

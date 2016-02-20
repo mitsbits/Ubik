@@ -7,6 +7,7 @@ using Ubik.Web.Basis.Contracts;
 using Ubik.Web.Components.AntiCorruption.Contracts;
 using Ubik.Web.Components.AntiCorruption.ViewModels.Devices;
 using Ubik.Web.Components.Contracts;
+using Ubik.Web.Components.Domain;
 
 namespace Ubik.Web.Client.Backoffice.Controllers
 {
@@ -94,6 +95,33 @@ namespace Ubik.Web.Client.Backoffice.Controllers
                 AddRedirectMessage(ex);
                 return RedirectToAction("Layouts", "Devices", null);
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> NewSlot(SlotViewModel model)
+        {
+            var module = await _deviceViewModels.Transform(model);
+            var slotInfo = new Slot(new SectionSlotInfo(model.SectionIdentifier, model.Enabled, model.Ordinal), module);
+
+            //try
+            //{
+            //    var isNew = model.SectionId == default(int);
+            //    if (!ModelState.IsValid)
+            //    {
+            //        AddRedirectMessage(ModelState);
+            //        return RedirectToAction("LayOuts", "Devices", new { id = model.DeviceId });
+            //    }
+            //    await _deviceViewModels.Execute(model);
+            //    AddRedirectMessage(ServerResponseStatus.SUCCESS, string.Format("Section '{0}' {1}!", model.FriendlyName, (isNew) ? "created" : "updated"));
+            //    return RedirectToAction("Layouts", "Devices", new { id = model.DeviceId, section = model.SectionId });
+            //}
+            //catch (Exception ex)
+            //{
+            //    AddRedirectMessage(ex);
+            //    return RedirectToAction("Layouts", "Devices", null);
+            //}
+            return null;
         }
 
         public async Task<ActionResult> RemoveSection(int id, int deviceId, string sectionName)

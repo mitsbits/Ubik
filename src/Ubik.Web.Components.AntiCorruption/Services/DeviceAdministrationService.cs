@@ -157,6 +157,18 @@ namespace Ubik.Web.Components.AntiCorruption.Services
             }
         }
 
+        public Task<BasePartialModule> Transform(SlotViewModel config)
+        {
+            var descriptor = _resident.Modules.Installed.Single(x => x.Default().GetType().FullName == config.FullName);
+            var module = descriptor.Default();
+            module.Parameters.Clear();
+            foreach (var p in config.Parameters)
+            {
+                module.Parameters.Add(p);
+            }
+            return Task.FromResult(module);
+        }
+
         #endregion IDeviceAdministrationViewModelService
     }
 }

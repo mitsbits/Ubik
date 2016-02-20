@@ -1,14 +1,12 @@
 ﻿@using Ubik.Web.Components.AntiCorruption.ViewModels.Devices
 @using Ubik.Web.Components.AntiCorruption.Contracts
 @model DeviceViewModel
-@{ 
+@{
     var _model = Model.SelectedSection;
     var shouldShow = _model != null;
 }
 @if (shouldShow)
 {
-    var g = Model.AvailableModules.GroupBy(x => x.ModuleGroup);
-
 
     <div class="box  box-default">
         <div class="box-header">
@@ -17,27 +15,10 @@
                 <button data-widget="collapse" class="btn btn-box-tool" type="button">
                     <i class="fa fa-minus"></i>
                 </button>
-
             </div>
         </div>
-        <div class="box-body">
-            <select>
-                <option value=""></option>
-                @foreach(var gi in g)
-                {
-                    <optgroup label="@gi.Key">
-                        @foreach(var mi in gi)
-                        {
-                            <option value="@mi">@mi.FriendlyName</option>
 
-                        }
-
-                    </optgroup>
-
-                }
-            </select>
-        </div>
-
+        @Html.Partial("~/Areas/Backoffice/Views/Devices/Partials/DeviceSectionAddSlot.cshtml", new SlotViewModel() { AvailableModules = Model.AvailableModules, Enabled = false, Ordinal = 0, SectionId = Model.Id, SectionIdentifier = Model.SelectedSection.Identifier })
     </div>
 
 }
