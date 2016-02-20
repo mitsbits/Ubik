@@ -765,4 +765,9 @@ $(function () {
         radioClass: 'iradio_minimal-grey'
         }
     );
+
+    $("select").select2();
+
+
+
 });

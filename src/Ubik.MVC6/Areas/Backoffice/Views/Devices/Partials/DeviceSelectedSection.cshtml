@@ -7,6 +7,9 @@
 }
 @if (shouldShow)
 {
+    var g = Model.AvailableModules.GroupBy(x => x.ModuleGroup);
+
+
     <div class="box  box-default">
         <div class="box-header">
             <h3 class="box-title">@_model.FriendlyName</h3>
@@ -18,7 +21,21 @@
             </div>
         </div>
         <div class="box-body">
+            <select>
+                <option value=""></option>
+                @foreach(var gi in g)
+                {
+                    <optgroup label="@gi.Key">
+                        @foreach(var mi in gi)
+                        {
+                            <option value="@mi">@mi.FriendlyName</option>
 
+                        }
+
+                    </optgroup>
+
+                }
+            </select>
         </div>
 
     </div>
