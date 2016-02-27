@@ -44,10 +44,7 @@ namespace Ubik.Web.Client.System.BuildingBlocks.Partials.Views
 
         public BasePartialModule Clone()
         {
-
             return new PageBody(FriendlyName, ViewPath, Parameters.Cast<Tiding>().ToDictionary(x => x.Key, x => x.Value as object));
-
-
         }
 
     }

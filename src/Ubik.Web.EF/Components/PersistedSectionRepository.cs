@@ -7,6 +7,8 @@ using Ubik.EF6;
 using Ubik.EF6.Contracts;
 using Ubik.Infra.Contracts;
 using Ubik.Web.EF.Components.Contracts;
+using Ubik.Web.Components.Domain;
+using System.Linq;
 
 namespace Ubik.Web.EF.Components
 {
@@ -15,6 +17,12 @@ namespace Ubik.Web.EF.Components
         public PersistedSectionRepository(IAmbientDbContextLocator ambientDbContextLocator)
             : base(ambientDbContextLocator)
         {
+        }
+
+        public Task AddSlot(PersistedSlot slot)
+        {
+            DbContext.Set<PersistedSlot>().Add(slot);
+            return Task.FromResult(0);
         }
 
         public override async Task<PersistedSection> GetAsync(Expression<Func<PersistedSection, bool>> predicate)
@@ -31,5 +39,7 @@ namespace Ubik.Web.EF.Components
                     nameof(DbContext), typeof(ISequenceProvider).AssemblyQualifiedName));
             return await sepProvider.GetNext(typeof(PersistedSection));
         }
+
+
     }
 }

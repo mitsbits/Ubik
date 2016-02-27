@@ -10,6 +10,8 @@ namespace Ubik.Web.EF.Components
     {
         public DbSet<PersistedDevice> Devices { get; set; }
 
+        public DbSet<PersistedSlot> Slots { get; set; }
+
         public DbSet<PersistedTaxonomyDivision> TaxonomyDivisions { get; set; }
 
         public DbSet<PersistedTaxonomyElement> TaxonomyElements { get; set; }

@@ -30,6 +30,7 @@ namespace Ubik.Web.Components.AntiCorruption.Services
 
         private readonly IViewModelBuilder<PersistedSection, SectionViewModel> _sectionBuilder;
         private readonly IViewModelCommand<SectionSaveModel> _sectionCommand;
+        private readonly IViewModelCommand<SlotSaveModel> _slotCommand;
 
         private readonly IViewModelBuilder<PersistedSlot, SlotViewModel> _slotBuilder;
 
@@ -95,6 +96,11 @@ namespace Ubik.Web.Components.AntiCorruption.Services
             return response;
         }
 
+        public Task<IServerResponse> SetSlot(Slot slot)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion IDeviceAdministrationService
 
         #region IDeviceAdministrationViewModelService
@@ -156,18 +162,18 @@ namespace Ubik.Web.Components.AntiCorruption.Services
                 await db.SaveChangesAsync();
             }
         }
-
-        public Task<BasePartialModule> Transform(SlotViewModel config)
+        public async Task Execute(SlotSaveModel model)
         {
-            var descriptor = _resident.Modules.Installed.Single(x => x.Default().GetType().FullName == config.FullName);
-            var module = descriptor.Default();
-            module.Parameters.Clear();
-            foreach (var p in config.Parameters)
+            using (var db = _dbContextScopeFactory.CreateWithTransaction(IsolationLevel.ReadCommitted))
             {
-                module.Parameters.Add(p);
+                await _slotCommand.Execute(model);
+                await db.SaveChangesAsync();
             }
-            return Task.FromResult(module);
         }
+
+
+
+
 
         #endregion IDeviceAdministrationViewModelService
     }

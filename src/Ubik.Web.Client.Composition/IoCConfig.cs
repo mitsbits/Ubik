@@ -151,8 +151,10 @@ namespace Ubik.Web.Client.Composition
 
             services.AddScoped<IViewModelCommand<DeviceSaveModel>, DeviceViewModelCommand>();
             services.AddScoped<IViewModelCommand<SectionSaveModel>, SectionViewModelCommand>();
+            services.AddScoped<IViewModelCommand<SlotSaveModel>, SlotViewModelCommand>();
             services.AddScoped<IViewModelCommand<DivisionSaveModel>, DivisionViewModelCommand>();
             services.AddScoped<IViewModelCommand<ElementSaveModel>, ElementViewModelCommand>();
+
 
             services.AddSingleton<ISlugifier, SystemSlugService>();
             services.AddSingleton<ISlugWordReplacer, SystemSlugWordRplacer>();

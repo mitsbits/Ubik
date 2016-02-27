@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Ubik.Infra.Contracts;
+using Ubik.Web.Components.Domain;
 
 namespace Ubik.Web.EF.Components.Contracts
 {
@@ -12,5 +13,6 @@ namespace Ubik.Web.EF.Components.Contracts
 
     public interface IPersistedSectionRepository : ICRUDRespoditory<PersistedSection>, ISequenceRepository<PersistedSection>
     {
+        Task AddSlot(PersistedSlot slot);
     }
 }

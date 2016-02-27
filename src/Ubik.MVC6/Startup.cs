@@ -23,7 +23,7 @@ namespace Ubik.MVC6
                 .AddJsonFile("appsettings.json")
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddJsonFile("appsettings.ubik.json", optional: false)
-                .AddJsonFile($"appsettings.ubik.{env.EnvironmentName}.json", optional: true);
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.ubik.json", optional: true);
 
             if (env.IsDevelopment())
             {

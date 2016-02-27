@@ -12,5 +12,7 @@ namespace Ubik.Web.Components.Contracts
         Task<Device<TKey>> Get(TKey id);
 
         Task<IServerResponse> DeleteSection(int id);
+
+        Task<IServerResponse> SetSlot(Slot slot);
     }
 }

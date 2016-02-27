@@ -3,6 +3,7 @@ using System;
 using System.Threading.Tasks;
 using Ubik.Domain.Core;
 using Ubik.Infra;
+using Ubik.Infra.Contracts;
 using Ubik.Web.Basis.Contracts;
 using Ubik.Web.Components.AntiCorruption.Contracts;
 using Ubik.Web.Components.AntiCorruption.ViewModels.Devices;
@@ -16,10 +17,13 @@ namespace Ubik.Web.Client.Backoffice.Controllers
         private readonly IDeviceAdministrationService<int> _deviceService;
         private readonly IDeviceAdministrationViewModelService _deviceViewModels;
 
-        public DevicesController(IErrorLogManager errorLogManager, IEventBus eventDispatcher, IDeviceAdministrationService<int> deviceService, IDeviceAdministrationViewModelService deviceViewModels) : base(errorLogManager, eventDispatcher)
+
+        public DevicesController(IErrorLogManager errorLogManager, IEventBus eventDispatcher, 
+            IDeviceAdministrationService<int> deviceService, IDeviceAdministrationViewModelService deviceViewModels) : base(errorLogManager, eventDispatcher)
         {
             _deviceService = deviceService;
             _deviceViewModels = deviceViewModels;
+
         }
 
         public Task<ActionResult> Layouts(int? id, int? sectionId)
@@ -101,9 +105,7 @@ namespace Ubik.Web.Client.Backoffice.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> NewSlot(SlotViewModel model)
         {
-            var module = await _deviceViewModels.Transform(model);
-            var slotInfo = new Slot(new SectionSlotInfo(model.SectionIdentifier, model.Enabled, model.Ordinal), module);
-
+            await _deviceViewModels.Execute(model);
             //try
             //{
             //    var isNew = model.SectionId == default(int);
