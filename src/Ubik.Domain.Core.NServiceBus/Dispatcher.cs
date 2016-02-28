@@ -12,7 +12,7 @@ namespace Ubik.Domain.Core.NServiceBus
         IBus _endpoint;
 
         public DefaultDispatcher(IBus endpoint) { _endpoint = endpoint; }
-        public  Task Publish(IEvent @event)
+        public  Task Publish<T>(T @event) where T :IEvent
         {
           _endpoint.Publish(@event);
             return Task.FromResult(0);
