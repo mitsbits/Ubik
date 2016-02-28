@@ -211,35 +211,36 @@ namespace Ubik.Web.Client.Composition
         public static void ConfigureUbikBus(this IServiceCollection services)
         {
 
-            BusConfiguration busConfiguration = new BusConfiguration();
-            ConventionsBuilder conventions = busConfiguration.Conventions();
-            conventions.DefiningCommandsAs(t => typeof(Domain.Core.ICommand).IsAssignableFrom(t) && !t.IsAbstract);
-            conventions.DefiningEventsAs(t => typeof(Domain.Core.IEvent).IsAssignableFrom(t) && !t.IsAbstract);
-            conventions.DefiningMessagesAs(t => typeof(Domain.Core.IMessage).IsAssignableFrom(t) && !t.IsAbstract);
+            //BusConfiguration busConfiguration = new BusConfiguration();
+            //ConventionsBuilder conventions = busConfiguration.Conventions();
+            //conventions.DefiningCommandsAs(t => typeof(Domain.Core.ICommand).IsAssignableFrom(t) && !t.IsAbstract);
+            //conventions.DefiningEventsAs(t => typeof(Domain.Core.IEvent).IsAssignableFrom(t) && !t.IsAbstract);
+            //conventions.DefiningMessagesAs(t => typeof(Domain.Core.IMessage).IsAssignableFrom(t) && !t.IsAbstract);
 
-            busConfiguration.EndpointName("Ubik.Mvc.Endpoint");
-            busConfiguration.UseSerialization<JsonSerializer>();
-            busConfiguration.UsePersistence<InMemoryPersistence>();
-            busConfiguration.AssembliesToScan(_asmbls);
-            busConfiguration.CustomConfigurationSource(new ConfigurationSource());
+            //busConfiguration.EndpointName("Ubik.Mvc.Endpoint");
+            //busConfiguration.UseSerialization<JsonSerializer>();
+            //busConfiguration.UsePersistence<InMemoryPersistence>();
+            //busConfiguration.AssembliesToScan(_asmbls);
+            //busConfiguration.CustomConfigurationSource(new ConfigurationSource());
 
-            //var builder = new ContainerBuilder();
-            //builder.Populate(services);
-
-
-            //var containerConfig = new NServiceBusLocator(builder);
-            //busConfiguration.UseContainer(containerConfig);
+            ////var builder = new ContainerBuilder();
+            ////builder.Populate(services);
 
 
-
-            // var container = builder.Build();
-
-            busConfiguration.EnableInstallers();
+            ////var containerConfig = new NServiceBusLocator(builder);
+            ////busConfiguration.UseContainer(containerConfig);
 
 
 
-            IBus endpoint = Bus.Create(busConfiguration).Start();
+            //// var container = builder.Build();
 
+            //busConfiguration.EnableInstallers();
+
+
+
+            //IBus endpoint = Bus.Create(busConfiguration).Start();
+
+            IBus endpoint = null;
             var dispatcher = new DefaultDispatcher(endpoint);
             services.AddInstance(typeof(IDispatcherInstance), dispatcher);
             services.AddInstance(typeof(IEventBus), dispatcher);

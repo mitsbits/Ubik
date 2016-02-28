@@ -21,9 +21,10 @@ namespace Ubik.MVC6
             // Set up configuration sources.
             var builder = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                //.AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddJsonFile("appsettings.ubik.json", optional: false)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.ubik.json", optional: true);
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.ubik.json", optional: true)
+                ;
 
             if (env.IsDevelopment())
             {
