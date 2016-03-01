@@ -82,7 +82,32 @@ namespace Ubik.Web.Client.Composition
             WireUpInternals(services);
             WireUpSSSO(services);
             WireUpCms(services);
+            WireUpEventHandlers(services);
 
+        }
+
+        private static void WireUpEventHandlers(IServiceCollection services)
+        {
+            var eventhandlers = from x in _asmbls.Where(asmbl => asmbl.FullName.StartsWith("Ubik.")).SelectMany(asmbl => asmbl.GetTypes())
+                              where !x.IsAbstract && !x.IsInterface && 
+                              x.GetInterfaces().Any(y => y.IsGenericType && y.GetGenericTypeDefinition() == typeof(IHandlesMessage<>))
+                              select x;
+
+            var events = from x in _asmbls.Where(asmbl => asmbl.FullName.StartsWith("Ubik.")).SelectMany(asmbl => asmbl.GetTypes())
+                                where !x.IsAbstract && !x.IsInterface && 
+                                typeof(Domain.Core.IEvent).IsAssignableFrom(x)
+                                select x;
+
+            foreach(var @event in events)
+            {
+                var t = typeof(IHandlesMessage<>).MakeGenericType(@event);
+                var handlers = from x in eventhandlers where t.IsAssignableFrom(x) select x;
+                foreach(var handler in handlers)
+                {
+                    var descriptor = new ServiceDescriptor(t, handler, ServiceLifetime.Scoped);
+                    services.Add(descriptor);
+                }
+            }
         }
 
         public static void UseUbik(this IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApplicationLifetime lifetime, IConfigurationRoot configuration)
@@ -148,6 +173,8 @@ namespace Ubik.Web.Client.Composition
             services.AddScoped<IDeviceAdministrationService<int>, DeviceAdministrationService>();
             services.AddScoped<IDeviceAdministrationViewModelService, DeviceAdministrationService>();
             services.AddScoped<ITaxonomiesViewModelService, TaxonomiesViewModelService>();
+
+
 
             services.AddScoped<IViewModelCommand<DeviceSaveModel>, DeviceViewModelCommand>();
             services.AddScoped<IViewModelCommand<SectionSaveModel>, SectionViewModelCommand>();
@@ -240,16 +267,23 @@ namespace Ubik.Web.Client.Composition
 
             //IBus endpoint = Bus.Create(busConfiguration).Start();
 
-            IBus endpoint = null;
-            var dispatcher = new DefaultDispatcher(endpoint);
-            services.AddInstance(typeof(IDispatcherInstance), dispatcher);
-            services.AddInstance(typeof(IEventBus), dispatcher);
+
+
+
+            //IBus endpoint = null;
+            //var dispatcher = new DefaultDispatcher(endpoint);
+            //services.AddInstance(typeof(IDispatcherInstance), dispatcher);
+            //services.AddInstance(typeof(IEventBus), dispatcher);
 
             //return container.Resolve<IServiceProvider>();
+
+            services.AddSingleton<IDispatcherInstance, PoorMansDispatcher>();
+            services.AddSingleton<IEventBus, PoorMansDispatcher>();
         }
 
         public class ConfigurationSource : IConfigurationSource
         {
+            
             public T GetConfiguration<T>() where T : class, new()
             {
                 if (typeof(T) == typeof(MessageForwardingInCaseOfFaultConfig))

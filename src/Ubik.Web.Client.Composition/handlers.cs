@@ -1,4 +1,4 @@
-﻿using NServiceBus;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,14 +13,14 @@ using Ubik.Web.Membership.Events;
 
 namespace Ubik.Web.Client.Composition
 {
-    public class ContentSetEventHandler : NServiceBus.IHandleMessages<ContentSetEvent>
+    public class ContentSetEventHandler : IHandlesMessage<ContentSetEvent>
     {
 
 
         public ContentSetEventHandler() { }
 
 
-        public void Handle(ContentSetEvent message)
+        public Task Handle(ContentSetEvent message)
         {
             Debug.WriteLine("ContentSetEvent Title: {0}", message.Title);
 
@@ -33,17 +33,46 @@ namespace Ubik.Web.Client.Composition
                 var obj = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(message.Payload()), Encoding.UTF8, "application/json");
                 var result = client.PostAsync("api/backoffice/events/receive/", obj).Result;
             }
+            return Task.FromResult(0);
+        }
+       
+
+
+    }
+
+
+    public class ContentSetEventHandler2 : IHandlesMessage<ContentSetEvent>
+    {
+
+
+        public ContentSetEventHandler2() { }
+
+
+        public Task Handle(ContentSetEvent message)
+        {
+            Debug.WriteLine("ContentSetEvent Title: {0} 2", message.Title);
+
+            using (var client = new HttpClient())
+            {
+
+                client.BaseAddress = new Uri("http://localhost:5000/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                var obj = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(message.Payload()), Encoding.UTF8, "application/json");
+                var result = client.PostAsync("api/backoffice/events/receive/", obj).Result;
+            }
+            return Task.FromResult(0);
         }
 
 
 
     }
 
-    public class RolePersistedHandler : NServiceBus.IHandleMessages<RolePersisted>
+    public class RolePersistedHandler : IHandlesMessage<RolePersisted>
     {
         public RolePersistedHandler() { }
 
-        public void Handle(RolePersisted message)
+        public Task Handle(RolePersisted message)
         {
             using (var client = new HttpClient())
             {
@@ -53,6 +82,9 @@ namespace Ubik.Web.Client.Composition
                 var obj = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(message.Payload()), Encoding.UTF8, "application/json");
                 var result = client.PostAsync("api/backoffice/events/receive/", obj).Result;
             }
+            return Task.FromResult(0);
         }
+
+
     }
 }
