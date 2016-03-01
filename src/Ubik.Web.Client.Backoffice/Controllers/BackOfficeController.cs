@@ -18,7 +18,7 @@ namespace Ubik.Web.Client.Backoffice.Controllers
     public abstract class BackofficeController : Controller
     {
         private readonly IErrorLogManager _errorLogManager;
-        private readonly IEventBus _eventDispatcher;
+        protected readonly IEventBus _eventDispatcher;
 
         protected BackofficeController(IErrorLogManager errorLogManager, IEventBus eventDispatcher)
         {

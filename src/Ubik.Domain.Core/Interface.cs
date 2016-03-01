@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Ubik.Domain.Core
 {
@@ -16,10 +13,11 @@ namespace Ubik.Domain.Core
 
     public class Payload
     {
-      public string PayloadType
+        public string PayloadType
         {
             get; set;
         }
+
         public string PayloadJson
         {
             get; set;
@@ -28,29 +26,34 @@ namespace Ubik.Domain.Core
 
     public interface ICommand : IMessage { }
 
-    public interface IHandlesMessage<T>
+    public interface IHandlesMessage<T> where T : IEvent
     {
         Task Handle(T message);
     }
 
-    public interface IEventBus
+    public interface IHandlesCommand<T> where T : ICommand
     {
-        Task Publish<T>(T @event) where T :IEvent;
+        Task<ICommandResult> Execute(T message);
     }
 
+    public interface IEventBus
+    {
+        Task Publish<T>(T @event) where T : IEvent;
+    }
 
     public interface ICommandBus
     {
         Task<ICommandResult> Process<TCommand>(TCommand command) where TCommand : ICommand;
     }
 
-
-    public interface ICommandResult { }
+    public interface ICommandResult
+    {
+        bool Success { get; }
+        string Description { get; }
+    }
 
     public interface IDispatcherInstance
     {
         Task Stop();
     }
-
-
 }

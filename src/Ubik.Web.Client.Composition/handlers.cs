@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Ubik.Domain.Core;
+using Ubik.Infra.Contracts;
 using Ubik.Web.Client.Backoffice;
 using Ubik.Web.Membership.Events;
 
@@ -48,7 +49,7 @@ namespace Ubik.Web.Client.Composition
         public ContentSetEventHandler2() { }
 
 
-        public Task Handle(ContentSetEvent message)
+        public async Task Handle(ContentSetEvent message)
         {
             Debug.WriteLine("ContentSetEvent Title: {0} 2", message.Title);
 
@@ -59,9 +60,8 @@ namespace Ubik.Web.Client.Composition
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 var obj = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(message.Payload()), Encoding.UTF8, "application/json");
-                var result = client.PostAsync("api/backoffice/events/receive/", obj).Result;
+                var result = await client.PostAsync("api/backoffice/events/receive/", obj);
             }
-            return Task.FromResult(0);
         }
 
 
@@ -70,18 +70,16 @@ namespace Ubik.Web.Client.Composition
 
     public class RolePersistedHandler : IHandlesMessage<RolePersisted>
     {
-        public RolePersistedHandler() { }
+        private readonly ICacheProvider _cache;
+
+        public RolePersistedHandler(ICacheProvider cache)
+        {
+            _cache = cache;
+        }
 
         public Task Handle(RolePersisted message)
         {
-            using (var client = new HttpClient())
-            {
-                client.BaseAddress = new Uri("http://localhost:5000/");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                var obj = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(message.Payload()), Encoding.UTF8, "application/json");
-                var result = client.PostAsync("api/backoffice/events/receive/", obj).Result;
-            }
+            _cache.RemoveItem(message.CacheKey);
             return Task.FromResult(0);
         }
 

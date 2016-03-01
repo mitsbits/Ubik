@@ -1,23 +1,18 @@
-﻿//using Autofac;
-//using Autofac.Extensions.DependencyInjection;
-using Mehdime.Entity;
+﻿using Mehdime.Entity;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Hosting;
 using Microsoft.AspNet.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NServiceBus;
 using NServiceBus.Config;
 using NServiceBus.Config.ConfigurationSource;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Ubik.Cache.Runtime;
 using Ubik.Domain.Core;
-using Ubik.Domain.Core.NServiceBus;
 using Ubik.EF6;
 using Ubik.Infra.Contracts;
 using Ubik.Web.Basis.Contracts;
@@ -37,14 +32,10 @@ using Ubik.Web.EF.Components.Contracts;
 using Ubik.Web.EF.Membership;
 using Ubik.Web.Membership;
 using Ubik.Web.Membership.Contracts;
-using Ubik.Web.Membership.Events;
 using Ubik.Web.Membership.Managers;
 using Ubik.Web.Membership.Services;
 using Ubik.Web.Membership.ViewModels;
 using Ubik.Web.SSO;
-using NServiceBus.ObjectBuilder.Common;
-using NServiceBus.Container;
-using NServiceBus.Settings;
 
 namespace Ubik.Web.Client.Composition
 {
@@ -83,28 +74,52 @@ namespace Ubik.Web.Client.Composition
             WireUpSSSO(services);
             WireUpCms(services);
             WireUpEventHandlers(services);
-
+            WireUpCommandHandlers(services);
         }
 
         private static void WireUpEventHandlers(IServiceCollection services)
         {
             var eventhandlers = from x in _asmbls.Where(asmbl => asmbl.FullName.StartsWith("Ubik.")).SelectMany(asmbl => asmbl.GetTypes())
-                              where !x.IsAbstract && !x.IsInterface && 
-                              x.GetInterfaces().Any(y => y.IsGenericType && y.GetGenericTypeDefinition() == typeof(IHandlesMessage<>))
-                              select x;
-
-            var events = from x in _asmbls.Where(asmbl => asmbl.FullName.StartsWith("Ubik.")).SelectMany(asmbl => asmbl.GetTypes())
-                                where !x.IsAbstract && !x.IsInterface && 
-                                typeof(Domain.Core.IEvent).IsAssignableFrom(x)
+                                where !x.IsAbstract && !x.IsInterface &&
+                                x.GetInterfaces().Any(y => y.IsGenericType && y.GetGenericTypeDefinition() == typeof(IHandlesMessage<>))
                                 select x;
 
-            foreach(var @event in events)
+            var events = from x in _asmbls.Where(asmbl => asmbl.FullName.StartsWith("Ubik.")).SelectMany(asmbl => asmbl.GetTypes())
+                         where !x.IsAbstract && !x.IsInterface &&
+                         typeof(Domain.Core.IEvent).IsAssignableFrom(x)
+                         select x;
+
+            foreach (var @event in events)
             {
                 var t = typeof(IHandlesMessage<>).MakeGenericType(@event);
                 var handlers = from x in eventhandlers where t.IsAssignableFrom(x) select x;
-                foreach(var handler in handlers)
+                foreach (var handler in handlers)
                 {
-                    var descriptor = new ServiceDescriptor(t, handler, ServiceLifetime.Scoped);
+                    var descriptor = new ServiceDescriptor(t, handler, ServiceLifetime.Transient);
+                    services.Add(descriptor);
+                }
+            }
+        }
+
+        private static void WireUpCommandHandlers(IServiceCollection services)
+        {
+            var commandhandlers = from x in _asmbls.Where(asmbl => asmbl.FullName.StartsWith("Ubik.")).SelectMany(asmbl => asmbl.GetTypes())
+                                  where !x.IsAbstract && !x.IsInterface &&
+                                  x.GetInterfaces().Any(y => y.IsGenericType && y.GetGenericTypeDefinition() == typeof(IHandlesCommand<>))
+                                  select x;
+
+            var Commands = from x in _asmbls.Where(asmbl => asmbl.FullName.StartsWith("Ubik.")).SelectMany(asmbl => asmbl.GetTypes())
+                           where !x.IsAbstract && !x.IsInterface &&
+                           typeof(ICommand).IsAssignableFrom(x)
+                           select x;
+
+            foreach (var command in Commands)
+            {
+                var t = typeof(IHandlesCommand<>).MakeGenericType(command);
+                var handlers = from x in commandhandlers where t.IsAssignableFrom(x) select x;
+                foreach (var handler in handlers)
+                {
+                    var descriptor = new ServiceDescriptor(t, handler, ServiceLifetime.Transient);
                     services.Add(descriptor);
                 }
             }
@@ -174,14 +189,11 @@ namespace Ubik.Web.Client.Composition
             services.AddScoped<IDeviceAdministrationViewModelService, DeviceAdministrationService>();
             services.AddScoped<ITaxonomiesViewModelService, TaxonomiesViewModelService>();
 
-
-
             services.AddScoped<IViewModelCommand<DeviceSaveModel>, DeviceViewModelCommand>();
             services.AddScoped<IViewModelCommand<SectionSaveModel>, SectionViewModelCommand>();
             services.AddScoped<IViewModelCommand<SlotSaveModel>, SlotViewModelCommand>();
             services.AddScoped<IViewModelCommand<DivisionSaveModel>, DivisionViewModelCommand>();
             services.AddScoped<IViewModelCommand<ElementSaveModel>, ElementViewModelCommand>();
-
 
             services.AddSingleton<ISlugifier, SystemSlugService>();
             services.AddSingleton<ISlugWordReplacer, SystemSlugWordRplacer>();
@@ -237,7 +249,6 @@ namespace Ubik.Web.Client.Composition
 
         public static void ConfigureUbikBus(this IServiceCollection services)
         {
-
             //BusConfiguration busConfiguration = new BusConfiguration();
             //ConventionsBuilder conventions = busConfiguration.Conventions();
             //conventions.DefiningCommandsAs(t => typeof(Domain.Core.ICommand).IsAssignableFrom(t) && !t.IsAbstract);
@@ -253,22 +264,14 @@ namespace Ubik.Web.Client.Composition
             ////var builder = new ContainerBuilder();
             ////builder.Populate(services);
 
-
             ////var containerConfig = new NServiceBusLocator(builder);
             ////busConfiguration.UseContainer(containerConfig);
-
-
 
             //// var container = builder.Build();
 
             //busConfiguration.EnableInstallers();
 
-
-
             //IBus endpoint = Bus.Create(busConfiguration).Start();
-
-
-
 
             //IBus endpoint = null;
             //var dispatcher = new DefaultDispatcher(endpoint);
@@ -283,7 +286,6 @@ namespace Ubik.Web.Client.Composition
 
         public class ConfigurationSource : IConfigurationSource
         {
-            
             public T GetConfiguration<T>() where T : class, new()
             {
                 if (typeof(T) == typeof(MessageForwardingInCaseOfFaultConfig))
@@ -329,7 +331,6 @@ namespace Ubik.Web.Client.Composition
         //}
         //public class NServiceBusLocator : NServiceBus.ObjectBuilder.Common.IContainer
         //{
-
         //    private readonly Autofac.ContainerBuilder _autofac;
         //    public NServiceBusLocator(Autofac.ContainerBuilder container) { _autofac = container; }
 
@@ -370,7 +371,7 @@ namespace Ubik.Web.Client.Composition
 
         //    public void RegisterSingleton(Type lookupType, object instance)
         //    {
-        //        throw new NotImplementedException(); 
+        //        throw new NotImplementedException();
         //    }
 
         //    public void Release(object instance)
