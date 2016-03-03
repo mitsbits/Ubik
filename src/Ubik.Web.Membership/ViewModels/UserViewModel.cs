@@ -116,13 +116,9 @@ namespace Ubik.Web.Membership.ViewModels
         {
             var results = new List<IdentityResult>();
             var exesistingRoleNames = (await _roleManager.AllRoles()).Select(x => x.Name);
-            var needsRefresh = false;
             foreach (var roleViewModel in model.Roles)
             {
                 var viewModel = roleViewModel;
-
-
-
                 if (!exesistingRoleNames.Contains(viewModel.Name))
                 {
                     var role = new UbikRole(viewModel.Name);
@@ -132,12 +128,9 @@ namespace Ubik.Web.Membership.ViewModels
                         role.Claims.Add(new UbikRoleClaim(roleClaimRowViewModel.Type, roleClaimRowViewModel.Value));
                     }
                     results.Add(await _roleManager.CreateAsync(role));
-                    needsRefresh = true;
+                    await _eventsBus.Publish(new RolePersisted(role.Id, role.Name));
                 }
-
             }
-            if (needsRefresh) await _eventsBus.Publish(new RolePersisted());
-
             if (results.All(x => x.Succeeded)) return;
             throw new ApplicationException(string.Join("\n", results.SelectMany(x => x.Errors)));
         }
@@ -207,12 +200,13 @@ namespace Ubik.Web.Membership.ViewModels
         private readonly UbikRoleManager<UbikRole> _roleManager;
 
         private readonly IResident _resident;
+        private readonly IEventBus _eventsBus;
 
-        public NewUserViewModelCommand(UbikUserManager<UbikUser> userManager, UbikRoleManager<UbikRole> roleManager, IResident resident)
+        public NewUserViewModelCommand(UbikUserManager<UbikUser> userManager, UbikRoleManager<UbikRole> roleManager, IResident resident, IEventBus eventsBus)
         {
             _userManager = userManager;
             _roleManager = roleManager;
-
+            _eventsBus = eventsBus;
             _resident = resident;
         }
 
@@ -246,6 +240,7 @@ namespace Ubik.Web.Membership.ViewModels
                     var role = new UbikRole(viewModel.Name);
                     //do not save claims, this is a system role
                     results.Add(await _roleManager.CreateAsync(role));
+                    await _eventsBus.Publish(new RolePersisted(role.Id, role.Name));
                 }
             }
 

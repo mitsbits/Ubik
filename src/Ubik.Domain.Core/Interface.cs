@@ -4,7 +4,7 @@ namespace Ubik.Domain.Core
 {
     public interface IMessage { }
 
-    public interface IEvent : IMessage, IPayload { }
+    public interface IEvent : IMessage { }
 
     public interface IPayload
     {
