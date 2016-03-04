@@ -1,5 +1,8 @@
-﻿@{ 
+﻿@using Ubik.Web.BuildingBlocks.Ext
+@{ 
     Layout = "~/Views/Shared/_RootLayOut.cshtml";
+    this.RedefineSection("html_head_section");
+    this.RedefineSection("scripts");
 }
         <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">

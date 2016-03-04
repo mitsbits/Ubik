@@ -10,10 +10,12 @@ using Ubik.Web.Client.Backoffice.Contracts;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using Ubik.Web.Membership.Events;
+using Microsoft.AspNet.Authorization;
 
 namespace Ubik.Web.Client.Backoffice.Controllers
 {
     //[Authorize(Policy = "Over18")]
+    [Authorize]
     [Area("Backoffice")]
     public abstract class BackofficeController : Controller
     {
@@ -61,7 +63,7 @@ namespace Ubik.Web.Client.Backoffice.Controllers
             var viewBag = GetRootViewBag();
             viewBag.ContentInfo = content;
            // _eventDispatcher.Publish(new ContentSetEvent() { Title = content.Title });
-           // _eventDispatcher.Publish(new RolePersisted());
+           // _eventDispatcher.Publish(new RoleRowStateChanged());
         }
 
         private dynamic GetRootViewBag()

@@ -1,8 +1,9 @@
 ﻿@using System.Collections.Generic
 @using Microsoft.AspNet.Http
 @using Microsoft.AspNet.Http.Authentication
+@using Ubik.Web.SSO;
 @model LoginViewModel
-@inject SignInManager<ApplicationUser> SignInManager
+@inject SignInManager<UbikUser> SignInManager
 
 @{
     ViewData["Title"] = "Log in";
@@ -85,6 +86,6 @@
     </div>
 </div>
 
-@section Scripts {
+@section scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ubik.Domain.Core;
 using Ubik.Infra.Contracts;
+using Ubik.Infra.DataManagement;
 using Ubik.Web.BuildingBlocks.Contracts;
 using Ubik.Web.Membership.Contracts;
 using Ubik.Web.Membership.Events;
@@ -122,13 +123,9 @@ namespace Ubik.Web.Membership.ViewModels
                 if (!exesistingRoleNames.Contains(viewModel.Name))
                 {
                     var role = new UbikRole(viewModel.Name);
-
-                    foreach (var roleClaimRowViewModel in _resident.Security.ClaimsForRole(viewModel.Name))
-                    {
-                        role.Claims.Add(new UbikRoleClaim(roleClaimRowViewModel.Type, roleClaimRowViewModel.Value));
-                    }
+                    //do not save claims for system role
                     results.Add(await _roleManager.CreateAsync(role));
-                    await _eventsBus.Publish(new RolePersisted(role.Id, role.Name));
+                    await _eventsBus.Publish(new RoleRowStateChanged(role.Id, role.Name, RowState.Added));
                 }
             }
             if (results.All(x => x.Succeeded)) return;
@@ -240,7 +237,7 @@ namespace Ubik.Web.Membership.ViewModels
                     var role = new UbikRole(viewModel.Name);
                     //do not save claims, this is a system role
                     results.Add(await _roleManager.CreateAsync(role));
-                    await _eventsBus.Publish(new RolePersisted(role.Id, role.Name));
+                    await _eventsBus.Publish(new RoleRowStateChanged(role.Id, role.Name, RowState.Added));
                 }
             }
 

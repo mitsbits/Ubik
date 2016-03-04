@@ -9,7 +9,7 @@ using Ubik.Web.Membership.Events;
 
 namespace Ubik.Web.Client.Backoffice.EventHandlers
 {
-    public class RolePersistedHandler : IHandlesMessage<RolePersisted>
+    public class RolePersistedHandler : IHandlesMessage<RoleRowStateChanged>
     {
         private readonly IEventBus _eventBus;
 
@@ -17,7 +17,7 @@ namespace Ubik.Web.Client.Backoffice.EventHandlers
         {
             _eventBus = eventBus;
         }
-        public async Task Handle(RolePersisted message)
+        public async Task Handle(RoleRowStateChanged message)
         {
           await  _eventBus.Publish(new CacheDataBecameStale(Constants.RoleViewModelsCacheKey));
         }
