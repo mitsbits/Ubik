@@ -4,15 +4,21 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.OptionsModel;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Ubik.Web.Membership.Contracts;
 using Ubik.Web.SSO;
-
+using Ubik.Web.SSO.Stores;
+using System.Linq;
+using Ubik.Infra.Contracts;
+using Ubik.Web.Membership.ViewModels;
 
 namespace Ubik.Web.Membership.Managers
 {
-    public class UbikUserManager<TUser> : UserManager<TUser> where TUser : UbikUser 
+    public class UbikUserManager<TUser> : UserManager<TUser> where TUser : UbikUser
     {
+
+   
         public UbikUserManager(IUserStore<TUser> store,
             IOptions<IdentityOptions> optionsAccessor,
             IPasswordHasher<TUser> passwordHasher,
@@ -22,15 +28,23 @@ namespace Ubik.Web.Membership.Managers
             IdentityErrorDescriber errors,
             IServiceProvider services,
             ILogger<UserManager<TUser>> logger,
-            IHttpContextAccessor contextAccessor) : base(store,
+            IHttpContextAccessor contextAccessor
+            ) : base(store,
                 optionsAccessor, passwordHasher, userValidators,
                 passwordValidators, keyNormalizer, errors, services, logger, contextAccessor)
-        { }
+        {
+
+
+        }
+
 
         public async Task<IEnumerable<string>> GetRolesForUserAsync(string userId)
         {
             var ubikStore = Store as IUbikUserStore<int>;
             return ubikStore != null ? await ubikStore.GetRoleNamesForUser(int.Parse(userId)) : new List<string>();
         }
+
+
+
     }
 }

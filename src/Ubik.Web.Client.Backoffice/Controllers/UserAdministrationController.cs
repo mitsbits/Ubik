@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Ubik.Domain.Core;
 using Ubik.Infra;
 using Ubik.Web.Basis.Contracts;
+using Ubik.Web.Client.Backoffice.Filters;
+using Ubik.Web.Membership;
 using Ubik.Web.Membership.Contracts;
 using Ubik.Web.Membership.ViewModels;
 
@@ -47,8 +49,9 @@ namespace Ubik.Web.Client.Backoffice.Controllers
             return string.IsNullOrWhiteSpace(id) ? GetAllUsers() : GetOneUserById(id);
         }
 
+
         [ActionName("new-user")]
-        //[AuthorizeOperationToResource(OperationKey = SystemClaims.Operations.Create, ResourceKey = UserAdministrationAuth.Resources.User)]
+        [AuthOpToResource(OperationKey = SystemClaims.Operations.Create, ResourceKey = UserAdministrationAuth.Resources.User)]
         public ActionResult NewUser()
         {
             SetContentPage(new BackofficeContent() { Title = "User Administration", Subtitle = "here you can create a new user" });

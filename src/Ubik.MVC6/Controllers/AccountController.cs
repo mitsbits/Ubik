@@ -21,14 +21,14 @@ namespace Ubik.MVC6.Controllers
 	public class AccountController : Controller
 	{
 		private readonly UbikUserManager<UbikUser> _userManager;
-		private readonly UbikSignInManager<UbikUser> _signInManager;
+		private readonly UbikSignInManager<UbikUser, UbikRole> _signInManager;
 		private readonly IEmailSender _emailSender;
 		private readonly ISmsSender _smsSender;
 		private readonly ILogger _logger;
 
 		public AccountController(
 			UbikUserManager<UbikUser> userManager,
-            UbikSignInManager<UbikUser> signInManager,
+			UbikSignInManager<UbikUser, UbikRole> signInManager,
 			IEmailSender emailSender,
 			ISmsSender smsSender,
 			ILoggerFactory loggerFactory)

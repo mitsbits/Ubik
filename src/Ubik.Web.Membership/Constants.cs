@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Ubik.Web.Membership
 {
-    public static class Constants
+    public static class MembershipConstants
     {
         public const string RoleViewModelsCacheKey = "UserAdminstrationService_RoleViewModels";
     }

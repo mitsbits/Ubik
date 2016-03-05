@@ -67,7 +67,7 @@ namespace Ubik.Web.SSO
             services.TryAddScoped<ISecurityStampValidator, SecurityStampValidator<TUser>>();
             services.TryAddScoped<IUserClaimsPrincipalFactory<TUser>, UserClaimsPrincipalFactory<TUser, TRole>>();
             services.TryAddScoped<UbikUserManager<TUser>, UbikUserManager<TUser>>();
-            services.TryAddScoped<UbikSignInManager<TUser>, UbikSignInManager<TUser>>();
+            services.TryAddScoped<UbikSignInManager<TUser, TRole>, UbikSignInManager<TUser, TRole>>();
             services.TryAddScoped<UbikRoleManager<TRole>, UbikRoleManager<TRole>>();
 
             if (setupAction != null)

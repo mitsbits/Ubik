@@ -82,7 +82,7 @@ namespace Ubik.Web.Membership.Services
             }
             var result = await _roleManager.CreateAsync(copy);
             if (!result.Succeeded) throw new ApplicationException(string.Join("\n", result.Errors));
-            _cache.RemoveItem(Constants.RoleViewModelsCacheKey);
+            _cache.RemoveItem(MembershipConstants.RoleViewModelsCacheKey);
         }
 
         public async Task DeleteRole(string name)
@@ -93,7 +93,7 @@ namespace Ubik.Web.Membership.Services
             if (role == null) throw new ApplicationException("role to delete not found");
             var result = await _roleManager.DeleteAsync(role);
             if (!result.Succeeded) throw new ApplicationException(string.Join("\n", result.Errors));
-            _cache.RemoveItem(Constants.RoleViewModelsCacheKey);
+            _cache.RemoveItem(MembershipConstants.RoleViewModelsCacheKey);
         }
 
         public async Task LockUser(string userId, int days)
@@ -278,11 +278,11 @@ namespace Ubik.Web.Membership.Services
         {
             get
             {
-                var inCache = _cache.GetItem(Constants.RoleViewModelsCacheKey) as IEnumerable<RoleViewModel>;
+                var inCache = _cache.GetItem(MembershipConstants.RoleViewModelsCacheKey) as IEnumerable<RoleViewModel>;
                 if (inCache != null) return inCache;
 
-                _cache.SetItem(Constants.RoleViewModelsCacheKey, new List<RoleViewModel>(_authProviders.RoleModelsCheckDB(_roleManager)));
-                return _cache.GetItem(Constants.RoleViewModelsCacheKey) as IEnumerable<RoleViewModel>;
+                _cache.SetItem(MembershipConstants.RoleViewModelsCacheKey, new List<RoleViewModel>(_authProviders.RoleModelsCheckDB(_roleManager)));
+                return _cache.GetItem(MembershipConstants.RoleViewModelsCacheKey) as IEnumerable<RoleViewModel>;
             }
         }
 
@@ -290,7 +290,7 @@ namespace Ubik.Web.Membership.Services
         {
             await _roleCommand.Execute(model);
 
-            _cache.RemoveItem(Constants.RoleViewModelsCacheKey); // force cache to invalidate
+            _cache.RemoveItem(MembershipConstants.RoleViewModelsCacheKey); // force cache to invalidate
             //TODO: publish message for new role
         }
     }

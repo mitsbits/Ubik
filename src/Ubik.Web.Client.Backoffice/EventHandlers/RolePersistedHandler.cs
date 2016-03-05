@@ -19,7 +19,7 @@ namespace Ubik.Web.Client.Backoffice.EventHandlers
         }
         public async Task Handle(RoleRowStateChanged message)
         {
-          await  _eventBus.Publish(new CacheDataBecameStale(Constants.RoleViewModelsCacheKey));
+          await  _eventBus.Publish(new CacheDataBecameStale(MembershipConstants.RoleViewModelsCacheKey));
         }
     }
 }

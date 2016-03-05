@@ -244,7 +244,7 @@ namespace Ubik.Web.Client.Composition
 
             services.AddScoped(typeof(UserManager<UbikUser>), typeof(UbikUserManager<UbikUser>));
             services.AddScoped(typeof(RoleManager<UbikRole>), typeof(UbikRoleManager<UbikRole>));
-            services.AddScoped(typeof(SignInManager<UbikUser>), typeof(UbikSignInManager<UbikUser>));
+            services.AddScoped(typeof(SignInManager<UbikUser>), typeof(UbikSignInManager<UbikUser, UbikRole>));
         }
 
         public static void ConfigureUbikBus(this IServiceCollection services)
