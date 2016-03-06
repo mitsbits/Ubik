@@ -1,6 +1,6 @@
 ﻿namespace Ubik.Web.Components.Contracts
 {
-    internal interface IPartialView
+    public interface IPartialView
     {
         string ViewPath { get; }
     }

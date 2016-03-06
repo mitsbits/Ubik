@@ -15,7 +15,7 @@ using Microsoft.AspNet.Authorization;
 namespace Ubik.Web.Client.Backoffice.Controllers
 {
     //[Authorize(Policy = "Over18")]
-    [Authorize]
+    //[Authorize]
     [Area("Backoffice")]
     public abstract class BackofficeController : Controller
     {

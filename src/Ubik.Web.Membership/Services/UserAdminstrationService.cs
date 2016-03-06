@@ -290,7 +290,7 @@ namespace Ubik.Web.Membership.Services
         {
             await _roleCommand.Execute(model);
 
-            _cache.RemoveItem(MembershipConstants.RoleViewModelsCacheKey); // force cache to invalidate
+            //_cache.RemoveItem(MembershipConstants.RoleViewModelsCacheKey); // force cache to invalidate
             //TODO: publish message for new role
         }
     }

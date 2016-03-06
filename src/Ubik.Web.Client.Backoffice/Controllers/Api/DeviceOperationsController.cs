@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ubik.Web.BuildingBlocks.Contracts;
 using Ubik.Web.Components;
+using Ubik.Web.Components.Contracts;
+using Ubik.Web.Components.DTO;
 
 namespace Ubik.Web.Client.Backoffice.Controllers.Api
 {
@@ -16,11 +18,42 @@ namespace Ubik.Web.Client.Backoffice.Controllers.Api
 
         [Route("api/backoffice/devices/mod-config/{id?}")]
         [HttpGet]
-        public Task<BasePartialModule> GetModuleConfig(string id)
+        public Task<ModuleConfig> GetModuleConfig(string id)
         {
-            var hit = _resident.Modules.Installed.FirstOrDefault(x => x.Default().GetType().FullName == id);
+            if (string.IsNullOrWhiteSpace(id)) return Task.FromResult(ModuleConfig.Empty());
+            var hit = _resident.Modules.Installed.FirstOrDefault(x => x.GetType().FullName == id);
+            if (hit == null)
+            {
+                hit = _resident.Modules.Installed.FirstOrDefault(x => x.Default().GetType().FullName == id);
+            }
+            return Task.FromResult(new ModuleConfig(hit, hit.Default()));
+        }
 
-            return Task.FromResult(hit.Default());
+        public sealed class ModuleConfig
+        {
+            private ModuleConfig() { }
+            public ModuleConfig(IModuleDescriptor descriptor, BasePartialModule instance)
+            {
+                FriendlyName = descriptor.FriendlyName;
+                Summary = descriptor.Summary;
+                ModuleType = descriptor.ModuleType.Flavor;
+                ModuleGroup = descriptor.ModuleGroup;
+                Parameters = instance.Parameters;
+
+            }
+
+            public static ModuleConfig Empty()
+            {
+                return new ModuleConfig() { FriendlyName = string.Empty, ModuleGroup = string.Empty, ModuleType = string.Empty, Summary = string.Empty, Parameters = new Tidings() };
+            }
+            public string FriendlyName { get; set; }
+            public string Summary { get; set; }
+
+            public string ModuleType { get; set; }
+
+            public string ModuleGroup { get; set; }
+
+            public Tidings Parameters { get; set; }
         }
     }
 }

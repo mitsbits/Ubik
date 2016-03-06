@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Mvc.ViewFeatures;
+using System.Threading.Tasks;
 using Ubik.Web.BuildingBlocks.Contracts;
 using Ubik.Web.Components.Domain;
 
@@ -11,8 +12,9 @@ namespace Ubik.Web.BuildingBlocks
         {
         }
 
-        public virtual void Render(HtmlHelper helper)
+        public virtual Task Render(HtmlHelper helper)
         {
+            return Task.FromResult(0);
             //var dict = new ViewDataDictionary()
             //foreach (var value in RouteValues)
             //{

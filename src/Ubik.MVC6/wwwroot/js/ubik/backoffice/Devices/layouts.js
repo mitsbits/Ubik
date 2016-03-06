@@ -56,6 +56,7 @@
                     $(data.Parameters).each(function (index, item) {
                         var config = new ModuleParameter();
                         config.Identifier(Object.keys(item)[0]);
+                        config.Value(item[config.Identifier()]);
                         model.ModuleParametersList().push(config);
                         ko.applyBindings(model, $('#module-parameter-container')[0]);
                     });

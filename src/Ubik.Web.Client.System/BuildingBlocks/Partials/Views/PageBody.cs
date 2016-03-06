@@ -33,12 +33,12 @@ namespace Ubik.Web.Client.System.BuildingBlocks.Partials.Views
 
         public string ModuleGroup
         {
-            get { return "System"; }
+            get { return "System - Content"; }
         }
 
         public BasePartialModule Default()
         {
-            if (_defaultInstance == null) _defaultInstance = new PageBody();
+            if (_defaultInstance == null) _defaultInstance = new PageBody("~/Views/Shared/Partials/System/PageBody.cshtml");
             return _defaultInstance.Clone();
         }
 

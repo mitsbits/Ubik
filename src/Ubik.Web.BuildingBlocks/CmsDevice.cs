@@ -34,10 +34,10 @@ namespace Ubik.Web.BuildingBlocks
             _metas = new HashSet<CmsHtmlMeta>();
         }
 
-        public ITextualInfo Textual { get; private set; }
-        public IHtmlHeadInfo HtmlHeadInfo { get; private set; }
-        public string CanonicalURL { get; private set; }
-        public string Slug { get; private set; }
+        public ITextualInfo Textual { get;  set; }
+        public IHtmlHeadInfo HtmlHeadInfo { get;  set; }
+        public string CanonicalURL { get;  set; }
+        public string Slug { get;  set; }
 
         //IEnumerable<IHtmlMeta> IContent.Metas { get { return Metas; } }
         internal ICollection<CmsHtmlMeta> Metas { get { return _metas; } }

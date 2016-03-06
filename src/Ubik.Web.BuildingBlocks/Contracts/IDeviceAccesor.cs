@@ -23,7 +23,7 @@ namespace Ubik.Web.BuildingBlocks.Contracts
         {
             get
             {
-                var page = _current ?? (_current = (_viewContext.ViewBag.ContentInfo as IDevice));
+                var page = _current ?? (_current = (_viewContext.ViewBag.DeviceInfo as IDevice));
                 if (page != null) return page;
                 page = Default();
                 _viewContext.ViewBag.DeviceInfo = page;
@@ -37,7 +37,7 @@ namespace Ubik.Web.BuildingBlocks.Contracts
             {
                 Flavor = Components.DeviceRenderFlavor.Empty,
                 FriendlyName = "Default",
-                Path = "_Layout"
+                Path = "Layouts/SingleColumn"
             };
 
             return page;

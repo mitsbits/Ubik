@@ -5,7 +5,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Ubik.Domain.Core;
 using Ubik.Infra.Contracts;
+using Ubik.Web.Membership.Events;
 using Ubik.Web.Membership.Managers;
 using Ubik.Web.SSO;
 
@@ -69,10 +71,11 @@ namespace Ubik.Web.Membership.ViewModels
     public class RoleViewModelCommand : IViewModelCommand<RoleSaveModel>
     {
         private readonly UbikRoleManager<UbikRole> _roleManager;
-
-        public RoleViewModelCommand(UbikRoleManager<UbikRole> roleManager)
+        private readonly IEventBus _eventBus;
+        public RoleViewModelCommand(UbikRoleManager<UbikRole> roleManager, IEventBus eventBus)
         {
             _roleManager = roleManager;
+            _eventBus = eventBus;
         }
 
         public async Task Execute(RoleSaveModel model)
@@ -83,12 +86,14 @@ namespace Ubik.Web.Membership.ViewModels
             {
                 dbRole = new UbikRole() { Id = model.RoleId, Name = model.Name };
                 results.Add(await _roleManager.CreateAsync(dbRole));
+                await _eventBus.Publish(new RoleRowStateChanged(dbRole.Id, dbRole.Name, Infra.DataManagement.RowState.Added));
             }
             else
             {
                 dbRole.Name = model.Name;
 
                 await _roleManager.ClearClaims(dbRole);
+                await _eventBus.Publish(new RoleRowStateChanged(dbRole.Id, dbRole.Name, Infra.DataManagement.RowState.Modified));
 
             }
 

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@PageContent.Current.Title - Ubik.MVC6</title>
-    @RenderSection("html_head_section", false)
+    @(await RenderSectionAsync("html_head_section", false))
     <environment names="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
         <link rel="stylesheet" href="~/css/site.css" />
@@ -23,7 +23,6 @@
 </head>
 <body>
     @RenderBody()
-
     <environment names="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
@@ -41,6 +40,6 @@
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
 
-    @RenderSection("scripts", required: false)
+    @(await RenderSectionAsync("scripts", required: false))
 </body>
 </html>

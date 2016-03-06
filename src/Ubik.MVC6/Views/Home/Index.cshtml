@@ -1,7 +1,24 @@
-﻿
+﻿@using Ubik.Web.Components.Contracts
 
+@foreach(var s in Device.Current.Sections)
+{
+    DefineSection(s.Identifier, _ => {
 
-<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
+        return Task.Run(()=>{
+
+            foreach(var m in s.Slots)
+            {
+                var v = m.Module as IPartialView;
+                Html.RenderPartialAsync(v.ViewPath);
+
+            }
+        });
+
+    });
+
+}
+
+@*<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
     <ol class="carousel-indicators">
         <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
         <li data-target="#myCarousel" data-slide-to="1"></li>
@@ -108,4 +125,4 @@
             <li><a href="http://go.microsoft.com/fwlink/?LinkID=398609">Publish to Microsoft Azure Web Apps</a></li>
         </ul>
     </div>
-</div>
+</div>*@

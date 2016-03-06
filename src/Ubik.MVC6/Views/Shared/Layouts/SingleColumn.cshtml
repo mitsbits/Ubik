@@ -3,13 +3,12 @@
     Layout = "~/Views/Shared/_RootLayOut.cshtml";
     this.RedefineSection("html_head_section");
     this.RedefineSection("scripts");
+
 }
-@RenderSectionAsync("top_nav_section", false)
+
+    @(await RenderSectionAsync("top_nav_section", false))
 <div class="container body-content">
-@RenderSectionAsync("main_section", false)
+    @(await RenderSectionAsync("main_section", false))
     <hr />
-@RenderSectionAsync("footer_section", false)
+    @(await RenderSectionAsync("footer_section", false))
 </div>
-
-
-
