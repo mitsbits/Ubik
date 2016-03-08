@@ -14,6 +14,11 @@ namespace Ubik.Web.Components.DTO
             _bucket = new HashSet<Tiding>();
         }
 
+        public Tidings(IEnumerable<Tiding> source)
+        {
+            _bucket = new HashSet<Tiding>(source);
+        }
+
         #region ICollection
 
         public void Add(Tiding item)

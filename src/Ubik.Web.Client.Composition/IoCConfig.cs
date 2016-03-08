@@ -5,8 +5,6 @@ using Microsoft.AspNet.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NServiceBus.Config;
-using NServiceBus.Config.ConfigurationSource;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -284,40 +282,40 @@ namespace Ubik.Web.Client.Composition
             services.AddSingleton<IEventBus, PoorMansDispatcher>();
         }
 
-        public class ConfigurationSource : IConfigurationSource
-        {
-            public T GetConfiguration<T>() where T : class, new()
-            {
-                if (typeof(T) == typeof(MessageForwardingInCaseOfFaultConfig))
-                {
-                    MessageForwardingInCaseOfFaultConfig errorConfig = new MessageForwardingInCaseOfFaultConfig
-                    {
-                        ErrorQueue = "error"
-                    };
+        //public class ConfigurationSource : IConfigurationSource
+        //{
+        //    public T GetConfiguration<T>() where T : class, new()
+        //    {
+        //        if (typeof(T) == typeof(MessageForwardingInCaseOfFaultConfig))
+        //        {
+        //            MessageForwardingInCaseOfFaultConfig errorConfig = new MessageForwardingInCaseOfFaultConfig
+        //            {
+        //                ErrorQueue = "error"
+        //            };
 
-                    return errorConfig as T;
-                }
+        //            return errorConfig as T;
+        //        }
 
-                if (typeof(T) == typeof(UnicastBusConfig))
-                {
-                    var mappings = new MessageEndpointMappingCollection();
-                    var asmbls = _asmbls.Where(x => x.FullName.StartsWith("Ubik"));
-                    foreach (var asmbl in asmbls)
-                    {
-                        mappings.Add(new MessageEndpointMapping() { AssemblyName = asmbl.FullName, Endpoint = "Ubik.Mvc.Endpoint" });
-                    }
+        //        if (typeof(T) == typeof(UnicastBusConfig))
+        //        {
+        //            var mappings = new MessageEndpointMappingCollection();
+        //            var asmbls = _asmbls.Where(x => x.FullName.StartsWith("Ubik"));
+        //            foreach (var asmbl in asmbls)
+        //            {
+        //                mappings.Add(new MessageEndpointMapping() { AssemblyName = asmbl.FullName, Endpoint = "Ubik.Mvc.Endpoint" });
+        //            }
 
-                    UnicastBusConfig unicastrConfig = new UnicastBusConfig()
-                    {
-                        MessageEndpointMappings = mappings
-                    };
+        //            UnicastBusConfig unicastrConfig = new UnicastBusConfig()
+        //            {
+        //                MessageEndpointMappings = mappings
+        //            };
 
-                    return unicastrConfig as T;
-                }
+        //            return unicastrConfig as T;
+        //        }
 
-                return null;
-            }
-        }
+        //        return null;
+        //    }
+        //}
 
         //public class NServiceBusContainer : ContainerDefinition
         //{

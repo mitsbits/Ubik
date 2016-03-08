@@ -9,6 +9,7 @@ using Ubik.Web.BuildingBlocks;
 using Ubik.Web.Client.System.BuildingBlocks.Partials.Views;
 using Ubik.Web.Components.Domain;
 using Ubik.Web.Basis;
+using Ubik.Web.Client.System.BuildingBlocks.ViewComponents;
 
 namespace Ubik.MVC6.Controllers
 {
@@ -59,6 +60,7 @@ namespace Ubik.MVC6.Controllers
             result.Sections.Add(topNavSection);
             var mainSection = new CmsSection() { ForFlavor = Web.Components.DeviceRenderFlavor.Empty, Identifier = "main_section", FriendlyName = "Main Section" };
             mainSection.Slots.Add(new CmsSlot(new CmsSectionSlotInfo("main_section", true, 2), new PageBody("~/Views/Shared/Partials/System/PageBody.cshtml")));
+            mainSection.Slots.Add(new CmsSlot(new CmsSectionSlotInfo("main_section", true, 3), new HtmlContentViewComponentDescriptor()));
             result.Sections.Add(mainSection);
 
             var footerSection = new CmsSection() { ForFlavor = Web.Components.DeviceRenderFlavor.Empty, Identifier = "footer_section", FriendlyName = "Footer Section" };

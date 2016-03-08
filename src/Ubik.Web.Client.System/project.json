@@ -18,6 +18,7 @@
     }
   },
   "dependencies": {
+    "Microsoft.AspNet.Mvc.ViewFeatures": "6.0.0-rc1-final",
     "Ubik.Web.Components": "1.0.0-*"
   }
 }

@@ -27,7 +27,6 @@
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-rc1-final",
     "Ubik.Cache": "1.0.0-*",
     "Ubik.Domain.Core": "1.0.0-*",
-    "Ubik.Domain.Core.NServiceBus": "1.0.0-*",
     "Ubik.EF6": "1.0.0-*",
     "Ubik.Infra": "1.0.0-*",
     "Ubik.Web.Basis": "1.0.0-*",

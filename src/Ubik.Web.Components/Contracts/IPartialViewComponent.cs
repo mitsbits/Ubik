@@ -2,7 +2,7 @@
 
 namespace Ubik.Web.Components.Contracts
 {
-    internal interface IPartialViewComponent
+    public interface IPartialViewComponent
     {
         string ClassName { get; }
 

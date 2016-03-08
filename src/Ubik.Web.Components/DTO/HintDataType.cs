@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Ubik.Web.Components.DTO
 {
@@ -54,7 +55,7 @@ namespace Ubik.Web.Components.DTO
 
         public static List<HintDataType> GetMembers()
         {
-            return new List<HintDataType>(Dict.Values);
+            return Dict.Values.ToList();
         }
     }
 }

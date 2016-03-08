@@ -10,8 +10,8 @@ namespace Ubik.Web.Components.Ext
         public static object ValueFromHint(this Catalogued item)
         {
             if (item == null) throw new ArgumentNullException("item");
-
-            if (HintDataType.GetMembers().Select(x => x.ToString()).Contains(item.Hint))
+            if (string.IsNullOrWhiteSpace(item.Hint)) item.Hint = HintDataType.Object.ToString();
+            if (HintDataType.GetMembers().Select(x => x.ToString()).Contains (item.Hint))
             {
                 var type = HintDataType.Parse(item.Hint);
                 if (type.Equals(HintDataType.Boolean))
@@ -61,11 +61,12 @@ namespace Ubik.Web.Components.Ext
 
         public static object[] ValuesFromHint(this IEnumerable<Tiding> collection)
         {
-            return
-                collection.Where(x => HintDataType.GetMembers().Select(m => m.ToString()).Contains(x.Hint))
+            var result =
+                collection.Where(x => HintDataType.GetMembers().Select(m => m.ToString()).Contains(string.IsNullOrWhiteSpace( x.Hint)?"object":x.Hint))
                     .OrderByDescending(x => x.Weight)
                     .Select(x => x.ValueFromHint())
                     .ToArray();
+            return result;
         }
 
         public static IDictionary<string, object> ToDictionary(this IEnumerable<Tiding> collection)

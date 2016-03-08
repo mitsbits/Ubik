@@ -53,13 +53,14 @@
                     model.Summary(data.Summary);
                     model.FriendlyName(data.FriendlyName);
                     model.shouldShow(true);
-                    $(data.Parameters).each(function (index, item) {
+                    $(Object.keys(data.Parameters)).each(function (index, item) {
                         var config = new ModuleParameter();
-                        config.Identifier(Object.keys(item)[0]);
-                        config.Value(item[config.Identifier()]);
+                        config.Identifier(item);
+                        config.Value(data.Parameters[config.Identifier()]);
                         model.ModuleParametersList().push(config);
-                        ko.applyBindings(model, $('#module-parameter-container')[0]);
+                       
                     });
+                    ko.applyBindings(model, $('#module-parameter-container')[0]);
                 });
             });
 

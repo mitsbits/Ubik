@@ -13,10 +13,8 @@
     }
   },
   "dependencies": {
-    "NServiceBus": "5.2.14",
     "Ubik.Cache": "1.0.0-*",
     "Ubik.Domain.Core": "1.0.0-*",
-    "Ubik.Domain.Core.NServiceBus": "1.0.0-*",
     "Ubik.EF6": "1.0.0-*",
     "Ubik.Infra": "1.0.0-*",
     "Ubik.Web.Basis": "1.0.0-*",

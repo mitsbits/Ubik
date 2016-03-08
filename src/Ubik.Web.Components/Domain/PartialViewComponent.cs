@@ -50,11 +50,12 @@ namespace Ubik.Web.Components.Domain
         {
             get
             {
-                return
+                var result = 
                     Parameters.Cast<Tiding>()
                     .Where(x => x.Key.StartsWith(KeyPrefix)
                      && !_keys.Contains(x.Key.Replace(KeyPrefix, string.Empty)))
                         .ToList().ValuesFromHint();
+                return result;
             }
         }
 
