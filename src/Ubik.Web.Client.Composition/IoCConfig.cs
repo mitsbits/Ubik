@@ -9,6 +9,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Ubik.Assets.Store.Core.Contracts;
+using Ubik.Assets.Store.EF;
+using Ubik.Assets.Store.EF.Contracts;
+using Ubik.Assets.Store.EF.Repositories;
+using Ubik.Assets.Store.EF.Services;
 using Ubik.Cache.Runtime;
 using Ubik.Domain.Core;
 using Ubik.EF6;
@@ -69,10 +74,21 @@ namespace Ubik.Web.Client.Composition
         {
             WireUpDbContexts(services, configuration);
             WireUpInternals(services);
+            WireUpAssetStore(services);
             WireUpSSSO(services);
             WireUpCms(services);
             WireUpEventHandlers(services);
             WireUpCommandHandlers(services);
+        }
+
+        private static void WireUpAssetStore(IServiceCollection services)
+        {
+            services.AddScoped<IAssetRepository, AssetRepository>();
+            services.AddScoped<IAssetVersionRepository, AssetVersionRepository>();
+            services.AddScoped<IMimeRepository, MimeRepository>();
+            services.AddScoped<IAssetStoreProjectionRepository, AssetStoreProjectionRepository>();
+
+            services.AddScoped<IStoreService<Guid>, StoreService>();
         }
 
         private static void WireUpEventHandlers(IServiceCollection services)
@@ -136,12 +152,14 @@ namespace Ubik.Web.Client.Composition
         {
             var cmsConnString = configuration["Data:cmsconnection:ConnectionString"];
             var authConnString = configuration["Data:authconnection:ConnectionString"];
+            var assetsConnString = configuration["Data:assetsconnection:ConnectionString"];
 
             var connectionStrings = new Dictionary<Type, string>
             {
                 {typeof (AuthDbContext), authConnString},
                 {typeof (ElmahDbContext), cmsConnString},
-                {typeof (ComponentsDbContext), cmsConnString}
+                {typeof (ComponentsDbContext), cmsConnString},
+                {typeof (AssetsStoreDbContext), assetsConnString}
             };
 
             var serviceDescriptor = new ServiceDescriptor(typeof(IDbContextFactory), new DbContextFactory(connectionStrings));

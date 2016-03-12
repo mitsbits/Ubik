@@ -12,7 +12,7 @@ namespace Ubik.EF6
     public abstract class SequenceProviderDbContext : DbContext, ISequenceProvider
     {
         protected SequenceProviderDbContext()
-            : base("cmsconnectionstring")
+            : base("defaultconnectionstring")
         {
         }
 

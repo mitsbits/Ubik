@@ -9,6 +9,10 @@
     "net46": { }
   },
   "dependencies": {
+    "EntityFramework": "6.1.3",
+    "Mehdime.Entity": "1.0.0",
+    "System.Data.Common": "4.0.1-rc2-23722",
+    "Ubik.Assets.Store.Core": "1.0.0-*",
     "Ubik.EF6": "1.0.0-*"
   }
 }

@@ -13,6 +13,8 @@
     }
   },
   "dependencies": {
+    "Ubik.Assets.Store.Core": "1.0.0-*",
+    "Ubik.Assets.Store.EF": "1.0.0-*",
     "Ubik.Cache": "1.0.0-*",
     "Ubik.Domain.Core": "1.0.0-*",
     "Ubik.EF6": "1.0.0-*",

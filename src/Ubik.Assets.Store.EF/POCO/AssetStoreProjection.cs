@@ -13,5 +13,6 @@ namespace Ubik.Assets.Store.EF.POCO
         public DateTimeOffset? last_access_time { get; set; }
         public bool is_directory { get; set; }
         public long? cached_file_size { get; set; }
+
     }
 }

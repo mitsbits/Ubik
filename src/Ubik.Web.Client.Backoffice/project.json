@@ -9,7 +9,7 @@
     "net46": { }
   },
   "dependencies": {
-
+    "Ubik.Assets.Store.Core": "1.0.0-*",
     "Ubik.Cache": "1.0.0-*",
     "Ubik.Domain.Core": "1.0.0-*",
     "Ubik.Infra": "1.0.0-*",

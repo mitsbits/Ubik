@@ -11,9 +11,10 @@ namespace Ubik.Assets.Store.EF.POCO
         public int State { get; set; }
         public int CurrentVersion { get; set; }
         public string Name { get; set; }
-
         public int MimeId { get; set; }
 
         public virtual Mime Mime { get; set; }
+        public virtual ICollection<AssetVersion> Versions { get; set; }
+
     }
 }

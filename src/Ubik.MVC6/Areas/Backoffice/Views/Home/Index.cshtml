@@ -12,6 +12,11 @@
     </div>
     <div class="box-body">
         Start creating your amazing application!
+        <form asp-action="upload" asp-controller="home"  method="post" enctype="multipart/form-data">
+            <input type="file" name="file"  />
+            <input type="submit" value="Upload" />
+
+        </form>
     </div>
     <!-- /.box-body -->
     <div class="box-footer">

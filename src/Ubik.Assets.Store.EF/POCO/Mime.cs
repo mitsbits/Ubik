@@ -18,5 +18,7 @@ namespace Ubik.Assets.Store.EF.POCO
         public string Extension { get; set; }
         public string DetailsTitle { get; set; }
         public string DetailsLink { get; set; }
+
+        public virtual ICollection<Asset> Assets { get; set; }
     }
 }
