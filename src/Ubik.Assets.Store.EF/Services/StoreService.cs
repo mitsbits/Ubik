@@ -13,18 +13,25 @@ namespace Ubik.Assets.Store.EF.Services
         private readonly IDbContextScopeFactory _dbContextScopeFactory;
         private readonly IAssetStoreProjectionRepository _storeRepo;
         private readonly IMimeRepository _mimeRepo;
+        private readonly IConflictingNamesResolver _nameResolver;
 
-        public StoreService(IDbContextScopeFactory dbContextScopeFactory, IAssetStoreProjectionRepository storeRepo, IMimeRepository mimeRepo)
+        public StoreService(IDbContextScopeFactory dbContextScopeFactory, IAssetStoreProjectionRepository storeRepo, IMimeRepository mimeRepo, IConflictingNamesResolver nameResolver)
         {
             _dbContextScopeFactory = dbContextScopeFactory;
             _storeRepo = storeRepo;
             _mimeRepo = mimeRepo;
+            _nameResolver = nameResolver;
         }
 
         public async Task<AssetInfo<Guid>> Upload(byte[] content, string fileName, string parentFolder = default(string))
         {
+
             using (var db = _dbContextScopeFactory.Create())
             {
+                var exists = await _storeRepo.Exists(fileName, parentFolder);
+                if (exists) fileName = await _nameResolver.Resolve(fileName);
+
+
                 var id = await _storeRepo.Add(fileName, content, parentFolder);
 
                 var projection = await _storeRepo.GetAsync(x => x.stream_id == id);

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Ubik.Assets.Store.Core.Contracts;
+using Ubik.Assets.Store.Core.Services;
 using Ubik.Assets.Store.EF;
 using Ubik.Assets.Store.EF.Contracts;
 using Ubik.Assets.Store.EF.Repositories;
@@ -88,6 +89,7 @@ namespace Ubik.Web.Client.Composition
             services.AddScoped<IMimeRepository, MimeRepository>();
             services.AddScoped<IAssetStoreProjectionRepository, AssetStoreProjectionRepository>();
 
+            services.AddScoped<IConflictingNamesResolver, DefaultConflictingNamesResolver>();
             services.AddScoped<IStoreService<Guid>, StoreService>();
         }
 

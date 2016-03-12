@@ -18,7 +18,7 @@ namespace Ubik.Assets.Store.EF
 
         private const string AssetStoreTableName = "AssetStore";
 
-
+        private string _assetStoreRoot;
 
         #region Props
         public DbSet<Asset> Assets { get; set; }
@@ -28,6 +28,15 @@ namespace Ubik.Assets.Store.EF
 
         public DbSet<AssetStoreProjection> Projections { get; set; }
         #endregion
+
+        public string AssetStoreRoot
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(_assetStoreRoot)) _assetStoreRoot = FileTableRootPath(AssetStoreTableName).Result;
+                return _assetStoreRoot;
+            }
+        }
 
         public AssetsStoreDbContext(string connectionstring) : base(connectionstring)
         {
@@ -58,15 +67,16 @@ namespace Ubik.Assets.Store.EF
             }
         }
 
-        private static DataTable GetParentDirectories(string parent)
+        public static DataTable GetParentDirectories(string parent)
         {
             var result = new DataTable();
             result.Columns.Add("Item", typeof(string));
             result.Columns.Add("SortOrder", typeof(int));
-
+            var delemeters = new[] { '/', '.', '\\' };
+            parent = parent.TrimEnd(delemeters);
             if (string.IsNullOrWhiteSpace(parent)) return result;
             var counter = 1;
-            foreach (var item in parent.Split(new[] { '/', '.', '\\' }))
+            foreach (var item in parent.Split(delemeters))
             {
                 result.Rows.Add(new object[] { item, counter });
                 counter++;
@@ -74,22 +84,39 @@ namespace Ubik.Assets.Store.EF
             return result;
         }
 
-        public virtual ObjectResult<string> FileTableRootPath(string tableName)
+        public virtual async Task<string> FileTableRootPath(string tableName)
         {
-            var tableNameParameter = tableName != null ?
-                new ObjectParameter("tableName", tableName) :
-                new ObjectParameter("tableName", typeof(string));
+            if (Database.Connection.State == ConnectionState.Closed) await Database.Connection.OpenAsync();
+            using (var cmd = Database.Connection.CreateCommand())
+            {
 
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("FileTableRootPath", tableNameParameter);
+                cmd.CommandText = "[FileTableRootPath]";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter("tableName", tableName));
+
+                var result = await cmd.ExecuteScalarAsync();
+                return result.ToString();
+            }
+
         }
 
-        public virtual int StreamIdFromPath(string path, ObjectParameter id)
+        public virtual async Task<Guid> StreamIdFromPath(string path)
         {
-            var pathParameter = path != null ?
-                new ObjectParameter("path", path) :
-                new ObjectParameter("path", typeof(string));
+            if (Database.Connection.State == ConnectionState.Closed) await Database.Connection.OpenAsync();
+            using (var cmd = Database.Connection.CreateCommand())
+            {
+                cmd.CommandText = "[StreamIdFromPath]";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter("path", path));
 
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("StreamIdFromPath", pathParameter, id);
+                var idParam = new SqlParameter("stream_id", SqlDbType.UniqueIdentifier) { Direction = ParameterDirection.Output };
+                cmd.Parameters.Add(idParam);
+
+                await cmd.ExecuteNonQueryAsync();
+
+                return Guid.Parse(idParam.Value.ToString());
+            }
+
         }
 
         public virtual ObjectResult<string> AssetPath(Nullable<int> assetId, Nullable<int> version)

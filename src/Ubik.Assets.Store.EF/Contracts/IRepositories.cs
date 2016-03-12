@@ -19,6 +19,7 @@ namespace Ubik.Assets.Store.EF.Contracts
 
     public interface IAssetStoreProjectionRepository : IReadRepository<AssetStoreProjection>, IReadAsyncRepository<AssetStoreProjection>
     {
+        Task<bool> Exists(string filename, string parentFolder);
         Task<Guid> Add(string filename, byte[] data, string parentFolder);
     }
 }
