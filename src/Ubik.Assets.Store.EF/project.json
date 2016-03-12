@@ -1,0 +1,14 @@
+{
+  "version": "1.0.0-*",
+  "description": "Ubik.Assets.Store.EF Class Library",
+  "authors": [ "mitsbits" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "net46": { }
+  },
+  "dependencies": {
+    "Ubik.EF6": "1.0.0-*"
+  }
+}
