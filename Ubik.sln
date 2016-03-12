@@ -65,7 +65,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assets", "Assets", "{EFA234
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Ubik.Assets.Store.EF", "src\Ubik.Assets.Store.EF\Ubik.Assets.Store.EF.xproj", "{24DD76CB-86FC-4020-98C8-3DF586C2A968}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Ubik.Assets.Store.Core", "Ubik.Assets.Store.Core\Ubik.Assets.Store.Core.xproj", "{5EA126F3-A002-4AF7-BBBB-4BE7329C0422}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Ubik.Assets.Store.Core", "src\Ubik.Assets.Store.Core\Ubik.Assets.Store.Core.xproj", "{5EA126F3-A002-4AF7-BBBB-4BE7329C0422}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
