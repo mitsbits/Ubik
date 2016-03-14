@@ -88,6 +88,7 @@ namespace Ubik.Web.Client.Composition
             services.AddScoped<IAssetVersionRepository, AssetVersionRepository>();
             services.AddScoped<IMimeRepository, MimeRepository>();
             services.AddScoped<IAssetStoreProjectionRepository, AssetStoreProjectionRepository>();
+            services.AddScoped<IAssetProjectionRepository, AssetProjectionRepository>();
 
             services.AddSingleton<IConflictingNamesResolver, DefaultConflictingNamesResolver>();
             services.AddSingleton<IAssetDirectoryStrategy<int>, DefaultAssetDirectoryStrategy>();

@@ -9,6 +9,7 @@ using Ubik.Assets.Store.EF.Contracts;
 using Ubik.Assets.Store.EF.POCO;
 using Ubik.Domain.Core;
 using Ubik.EF6.Contracts;
+using System.Collections.Generic;
 
 namespace Ubik.Assets.Store.EF.Services
 {
@@ -21,8 +22,9 @@ namespace Ubik.Assets.Store.EF.Services
         private readonly IAssetDirectoryStrategy<int> _direcotryStartegy;
         private readonly IAssetRepository _assetRepo;
         private readonly IEventBus _eventBus;
+        private readonly IAssetProjectionRepository _projectionsRepo;
 
-        public StoreService(IDbContextScopeFactory dbContextScopeFactory, IAssetStoreProjectionRepository storeRepo, IMimeRepository mimeRepo, IConflictingNamesResolver nameResolver, IAssetDirectoryStrategy<int> direcotryStartegy, IAssetRepository assetRepo, IEventBus eventBus)
+        public StoreService(IDbContextScopeFactory dbContextScopeFactory, IAssetStoreProjectionRepository storeRepo, IMimeRepository mimeRepo, IConflictingNamesResolver nameResolver, IAssetDirectoryStrategy<int> direcotryStartegy, IAssetRepository assetRepo, IEventBus eventBus, IAssetProjectionRepository projectionsRepo)
         {
             _dbContextScopeFactory = dbContextScopeFactory;
             _storeRepo = storeRepo;
@@ -31,6 +33,7 @@ namespace Ubik.Assets.Store.EF.Services
             _direcotryStartegy = direcotryStartegy;
             _assetRepo = assetRepo;
             _eventBus = eventBus;
+            _projectionsRepo = projectionsRepo;
         }
 
         public async Task<IFileInfo<Guid>> Upload(byte[] content, string fileName, string parentFolder = default(string))
@@ -149,6 +152,40 @@ namespace Ubik.Assets.Store.EF.Services
                 }
                 throw new ApplicationException(string.Format("Asset with id: {0} does not exist.", id));
             }
+        }
+
+        public async Task<IEnumerable<IAssetInfo<int>>> Projections(IEnumerable<int> ids)
+        {
+            var projections = await _projectionsRepo.GetProjections(ids);
+            var collection = new List<IAssetInfo<int>>();
+            foreach (var p in projections)
+            {
+                var result = new AssetItemInfo<int>
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    State = (AssetState)p.State,
+                    CurrentFile = new VersionItemInfo()
+                    {
+                        Version = p.CurrentVersion,
+                        FileInfo = new FileItemInfo<Guid>()
+                        {
+                            CreationDate = p.creation_time.DateTime,
+                            FileSize = p.cached_file_size.Value,
+                            FileType = p.file_type,
+                            FullPath = p.full_path,
+                            Id = p.stream_id,
+                            IsDirectory = p.is_directory,
+                            LastRead = (p.last_access_time.HasValue) ? p.last_access_time.Value.DateTime : default(DateTime?),
+                            LastWrite = p.last_write_time.DateTime,
+                            MimeType = p.ContentType,
+                            Name = p.FileName
+                        }
+                    }
+                };
+                collection.Add(result);
+            }
+            return collection;
         }
     }
 }

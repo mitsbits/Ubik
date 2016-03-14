@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Ubik.Assets.Store.EF.POCO;
 using Ubik.EF6.Contracts;
@@ -22,5 +23,10 @@ namespace Ubik.Assets.Store.EF.Contracts
     {
         Task<bool> Exists(string filename, string parentFolder);
         Task<Guid> Add(string filename, byte[] data, string parentFolder);
+    }
+
+    public interface IAssetProjectionRepository : IReadRepository<AssetProjection>, IReadAsyncRepository<AssetProjection>
+    {
+        Task<IEnumerable<AssetProjection>> GetProjections(IEnumerable<int> ids);
     }
 }
