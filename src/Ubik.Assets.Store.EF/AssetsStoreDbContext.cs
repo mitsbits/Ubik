@@ -1,10 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
-using System.Data.Common;
 using System.Data.Entity;
-using System.Data.Entity.Core.Objects;
-using System.Data.Entity.Infrastructure;
 using System.Data.Entity.ModelConfiguration;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Data.SqlClient;
@@ -16,19 +13,22 @@ namespace Ubik.Assets.Store.EF
 {
     public class AssetsStoreDbContext : SequenceProviderDbContext
     {
-
         private const string AssetStoreTableName = "AssetStore";
 
         private string _assetStoreRoot;
 
         #region Props
+
         public DbSet<Asset> Assets { get; set; }
         public DbSet<AssetVersion> Versions { get; set; }
 
         public DbSet<Mime> Mimes { get; set; }
 
-        public DbSet<AssetStoreProjection> Projections { get; set; }
-        #endregion
+        public DbSet<AssetStoreProjection> FileProjections { get; set; }
+
+        public DbSet<AssetProjection> AssetProjections { get; set; }
+
+        #endregion Props
 
         public string AssetStoreRoot
         {
@@ -43,8 +43,8 @@ namespace Ubik.Assets.Store.EF
         {
         }
 
-
         #region Stored Procedures
+
         public virtual async Task<Guid> AssetStoreAdd(string parent, string filename, byte[] filedata)
         {
             var shouldClose = false;
@@ -52,7 +52,6 @@ namespace Ubik.Assets.Store.EF
             if (Database.Connection.State == ConnectionState.Closed) { await Database.Connection.OpenAsync(); shouldClose = true; }
             using (var cmd = Database.Connection.CreateCommand())
             {
-
                 cmd.CommandText = "[AssetStoreAdd]";
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add(new SqlParameter("parent", GetParentDirectories(parent)));
@@ -87,23 +86,25 @@ namespace Ubik.Assets.Store.EF
 
         public virtual async Task<string> FileTableRootPath(string tableName)
         {
-            if (Database.Connection.State == ConnectionState.Closed) await Database.Connection.OpenAsync();
+            var shouldClose = false;
+
+            if (Database.Connection.State == ConnectionState.Closed) { await Database.Connection.OpenAsync(); shouldClose = true; }
             using (var cmd = Database.Connection.CreateCommand())
             {
-
                 cmd.CommandText = "[FileTableRootPath]";
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.Add(new SqlParameter("tableName", tableName));
 
                 var result = await cmd.ExecuteScalarAsync();
+                if (shouldClose) cmd.Connection.Close();
                 return result.ToString();
             }
-
         }
 
         public virtual async Task<Guid> StreamIdFromPath(string path)
         {
-            if (Database.Connection.State == ConnectionState.Closed) await Database.Connection.OpenAsync();
+            var shouldClose = false;
+            if (Database.Connection.State == ConnectionState.Closed) { await Database.Connection.OpenAsync(); shouldClose = true; }
             using (var cmd = Database.Connection.CreateCommand())
             {
                 cmd.CommandText = "[StreamIdFromPath]";
@@ -114,25 +115,29 @@ namespace Ubik.Assets.Store.EF
                 cmd.Parameters.Add(idParam);
 
                 await cmd.ExecuteNonQueryAsync();
-
+                if (shouldClose) cmd.Connection.Close();
                 return Guid.Parse(idParam.Value.ToString());
             }
-
         }
 
-        public virtual ObjectResult<string> AssetPath(Nullable<int> assetId, Nullable<int> version)
+        public virtual async Task<string> AssetPath(int? assetId, int? version)
         {
-            var assetIdParameter = assetId.HasValue ?
-                new ObjectParameter("assetId", assetId) :
-                new ObjectParameter("assetId", typeof(int));
+            var shouldClose = false;
+            if (Database.Connection.State == ConnectionState.Closed) { await Database.Connection.OpenAsync(); shouldClose = true; }
+            using (var cmd = Database.Connection.CreateCommand())
+            {
+                cmd.CommandText = "[AssetPath]";
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add(new SqlParameter("assetId", assetId));
+                cmd.Parameters.Add(new SqlParameter("version", version));
 
-            var versionParameter = version.HasValue ?
-                new ObjectParameter("version", version) :
-                new ObjectParameter("version", typeof(int));
-
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("AssetPath", assetIdParameter, versionParameter);
+                var result = await cmd.ExecuteScalarAsync();
+                if (shouldClose) cmd.Connection.Close();
+                return result.ToString();
+            }
         }
-        #endregion
+
+        #endregion Stored Procedures
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -145,6 +150,7 @@ namespace Ubik.Assets.Store.EF
     }
 
     #region Entity Configuration
+
     internal class AssetConfig : EntityTypeConfiguration<Asset>
     {
         public AssetConfig()
@@ -167,8 +173,6 @@ namespace Ubik.Assets.Store.EF
             HasRequired(x => x.Asset)
                 .WithMany(a => a.Versions)
                 .HasForeignKey(a => a.AssetId);
-
-
         }
     }
 
@@ -191,5 +195,16 @@ namespace Ubik.Assets.Store.EF
             Property(x => x.stream_id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
         }
     }
-    #endregion
+
+    internal class AssetProjectionConfig : EntityTypeConfiguration<AssetProjection>
+    {
+        public AssetProjectionConfig()
+        {
+            ToTable("AssetProjections");
+            HasKey(x => x.Id);
+            Property(x => x.stream_id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
+        }
+    }
+
+    #endregion Entity Configuration
 }

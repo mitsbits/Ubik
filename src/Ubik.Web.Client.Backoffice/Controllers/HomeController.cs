@@ -30,7 +30,7 @@ namespace Ubik.Web.Client.Backoffice.Controllers
             var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
             var stream = file.OpenReadStream();
             var data = stream.ReadToEnd();
-            var result = await store.AddNewVersion(31, data, fileName);
+            var result = await store.Create(fileName, Assets.Store.Core.AssetState.Active, data, fileName);
 
             return RedirectToAction("index");
         }

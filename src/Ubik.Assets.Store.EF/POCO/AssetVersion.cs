@@ -10,7 +10,7 @@ namespace Ubik.Assets.Store.EF.POCO
         public Guid StreamId { get; set; }
         public int AssetId { get; set; }
         public int  Version { get; set; }
-        public int MimeId { get; set; }
+        public int? MimeId { get; set; }
         public virtual Asset Asset { get; set; }
 
 

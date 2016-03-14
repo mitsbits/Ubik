@@ -17,20 +17,7 @@ namespace Ubik.Assets.Store.Core
         public string MimeType { get; set; }
     }
 
-    public class VersionItemInfo : IVersionInfo
-    {
-        public IFileInfo FileInfo  {  get; set;  }
-        public int Version   {  get; set;   }
-    }
 
-    public class AssetItemInfo<TKey> : IAssetInfo<TKey>
-    {
-        public IVersionInfo CurrentFile { get; set; }
 
-        public TKey Id { get; set; }
 
-        public string Name { get; set; }
-
-        public AssetState State { get; set; }
-    }
 }

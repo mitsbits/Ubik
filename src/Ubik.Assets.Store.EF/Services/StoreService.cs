@@ -4,8 +4,10 @@ using System.IO;
 using System.Threading.Tasks;
 using Ubik.Assets.Store.Core;
 using Ubik.Assets.Store.Core.Contracts;
+using Ubik.Assets.Store.Core.Events;
 using Ubik.Assets.Store.EF.Contracts;
 using Ubik.Assets.Store.EF.POCO;
+using Ubik.Domain.Core;
 using Ubik.EF6.Contracts;
 
 namespace Ubik.Assets.Store.EF.Services
@@ -18,8 +20,9 @@ namespace Ubik.Assets.Store.EF.Services
         private readonly IConflictingNamesResolver _nameResolver;
         private readonly IAssetDirectoryStrategy<int> _direcotryStartegy;
         private readonly IAssetRepository _assetRepo;
+        private readonly IEventBus _eventBus;
 
-        public StoreService(IDbContextScopeFactory dbContextScopeFactory, IAssetStoreProjectionRepository storeRepo, IMimeRepository mimeRepo, IConflictingNamesResolver nameResolver, IAssetDirectoryStrategy<int> direcotryStartegy, IAssetRepository assetRepo)
+        public StoreService(IDbContextScopeFactory dbContextScopeFactory, IAssetStoreProjectionRepository storeRepo, IMimeRepository mimeRepo, IConflictingNamesResolver nameResolver, IAssetDirectoryStrategy<int> direcotryStartegy, IAssetRepository assetRepo, IEventBus eventBus)
         {
             _dbContextScopeFactory = dbContextScopeFactory;
             _storeRepo = storeRepo;
@@ -27,6 +30,7 @@ namespace Ubik.Assets.Store.EF.Services
             _nameResolver = nameResolver;
             _direcotryStartegy = direcotryStartegy;
             _assetRepo = assetRepo;
+            _eventBus = eventBus;
         }
 
         public async Task<IFileInfo<Guid>> Upload(byte[] content, string fileName, string parentFolder = default(string))
@@ -55,6 +59,7 @@ namespace Ubik.Assets.Store.EF.Services
                 var ext = Path.GetExtension(fileName);
                 var mime = await _mimeRepo.GetAsync(x => x.Extension == ext);
                 if (mime != null) result.MimeType = mime.ContentType;
+                await _eventBus.Publish(new FileUploadedEvent(result));
                 return result;
             }
         }
@@ -82,9 +87,13 @@ namespace Ubik.Assets.Store.EF.Services
                     State = (int)asset.State,
                     CurrentVersion = 1,
                 };
-                entity.Versions.Add(new AssetVersion() { AssetId = asset.Id, StreamId = streamId, Version = 1 });
+                var ext = Path.GetExtension(fileName);
+                var mime = await _mimeRepo.GetAsync(x => x.Extension == ext);
+
+                entity.Versions.Add(new AssetVersion() { AssetId = asset.Id, StreamId = streamId, Version = 1, MimeId = (mime != null) ? mime.Id : default(int?) });
                 await _assetRepo.CreateAsync(entity);
                 await db.SaveChangesAsync();
+                await _eventBus.Publish(new AssetCreatedEvent(asset));
                 return asset;
             }
         }
@@ -98,6 +107,7 @@ namespace Ubik.Assets.Store.EF.Services
                 {
                     entity.State = (int)AssetState.Suspended;
                     await db.SaveChangesAsync();
+                    await _eventBus.Publish(new AssetStateChangeEvent<int>(id, AssetState.Suspended));
                 }
             }
         }
@@ -111,6 +121,7 @@ namespace Ubik.Assets.Store.EF.Services
                 {
                     entity.State = (int)AssetState.Suspended;
                     await db.SaveChangesAsync();
+                    await _eventBus.Publish(new AssetStateChangeEvent<int>(id, AssetState.Active));
                 }
             }
         }
@@ -123,14 +134,16 @@ namespace Ubik.Assets.Store.EF.Services
                 if (entity != null)
                 {
                     var asset = new AssetItemInfo<int>() { Id = id, Name = entity.Name, State = (AssetState)entity.State };
-                    var versionInfo = new VersionItemInfo() { Version = entity.CurrentVersion + 1};
+                    var versionInfo = new VersionItemInfo() { Version = entity.CurrentVersion + 1 };
                     var parentDirecotry = _direcotryStartegy.ParentFolder(asset);
                     var fileInfo = await Upload(content, fileName, parentDirecotry);
                     var streamId = fileInfo.Id;
                     versionInfo.FileInfo = fileInfo;
                     asset.CurrentFile = versionInfo;
                     entity.CurrentVersion = versionInfo.Version;
-                    entity.Versions.Add(new AssetVersion() { AssetId = asset.Id, StreamId = streamId, Version = versionInfo.Version });
+                    var ext = Path.GetExtension(fileName);
+                    var mime = await _mimeRepo.GetAsync(x => x.Extension == ext);
+                    entity.Versions.Add(new AssetVersion() { AssetId = asset.Id, StreamId = streamId, Version = versionInfo.Version, MimeId = (mime != null) ? mime.Id : default(int?) });
                     await db.SaveChangesAsync();
                     return asset;
                 }

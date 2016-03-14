@@ -35,7 +35,7 @@ namespace Ubik.Assets.Store.EF.Repositories
                 .ToArray());
 
 
-            var hit = DbContext.Projections.Where(x => x.full_path == expected).FirstOrDefault();
+            var hit = DbContext.FileProjections.Where(x => x.full_path == expected).FirstOrDefault();
 
             return Task.FromResult(hit != null);
 
