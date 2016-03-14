@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Data.Common;
 using System.Data.Entity;
@@ -153,6 +154,7 @@ namespace Ubik.Assets.Store.EF
             HasMany(x => x.Versions)
                 .WithRequired(x => x.Asset)
                 .HasForeignKey(x => x.AssetId);
+            Property(x => x.Id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
         }
     }
 
@@ -176,9 +178,7 @@ namespace Ubik.Assets.Store.EF
         {
             ToTable("Mimes");
             HasKey(x => x.Id);
-            HasMany(x => x.Assets)
-                .WithRequired(x => x.Mime)
-                .HasForeignKey(x => x.MimeId);
+            Property(x => x.Id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
         }
     }
 
@@ -188,6 +188,7 @@ namespace Ubik.Assets.Store.EF
         {
             ToTable("AssetStoreProjections");
             HasKey(x => x.stream_id);
+            Property(x => x.stream_id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.None);
         }
     }
     #endregion

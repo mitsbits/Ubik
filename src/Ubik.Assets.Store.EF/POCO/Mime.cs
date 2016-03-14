@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Ubik.EF6.Contracts;
 
 namespace Ubik.Assets.Store.EF.POCO
 {
-    public class Mime
+    public class Mime : ISequenceBase
     {
-        public Mime()
-        {
-            
-        }
-
         public int Id { get; set; }
         public string Name { get; set; }
         public string ContentType { get; set; }
@@ -19,6 +12,5 @@ namespace Ubik.Assets.Store.EF.POCO
         public string DetailsTitle { get; set; }
         public string DetailsLink { get; set; }
 
-        public virtual ICollection<Asset> Assets { get; set; }
     }
 }

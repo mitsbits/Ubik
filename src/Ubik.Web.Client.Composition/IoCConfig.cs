@@ -89,8 +89,10 @@ namespace Ubik.Web.Client.Composition
             services.AddScoped<IMimeRepository, MimeRepository>();
             services.AddScoped<IAssetStoreProjectionRepository, AssetStoreProjectionRepository>();
 
-            services.AddScoped<IConflictingNamesResolver, DefaultConflictingNamesResolver>();
+            services.AddSingleton<IConflictingNamesResolver, DefaultConflictingNamesResolver>();
+            services.AddSingleton<IAssetDirectoryStrategy<int>, DefaultAssetDirectoryStrategy>();
             services.AddScoped<IStoreService<Guid>, StoreService>();
+            services.AddScoped<IAssetService<int>, StoreService>();
         }
 
         private static void WireUpEventHandlers(IServiceCollection services)

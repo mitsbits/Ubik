@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Ubik.Assets.Store.EF.POCO;
+using Ubik.EF6.Contracts;
 using Ubik.Infra.Contracts;
 
 namespace Ubik.Assets.Store.EF.Contracts
 {
-    public interface IAssetRepository : ICRUDRespoditory<Asset>
+    public interface IAssetRepository : ICRUDRespoditory<Asset>, ISequenceRepository<Asset>
     {
     }
 

@@ -25,12 +25,12 @@ namespace Ubik.Web.Client.Backoffice.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Upload([FromServices]IStoreService<Guid> store, IFormFile file)
+        public async Task<IActionResult> Upload([FromServices]IAssetService<int> store, IFormFile file)
         {
             var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
             var stream = file.OpenReadStream();
             var data = stream.ReadToEnd();
-            var result =await store.Upload(data, fileName, string.Empty);
+            var result = await store.Create(fileName, Assets.Store.Core.AssetState.Active, data, fileName);
 
             return RedirectToAction("index");
         }

@@ -18,58 +18,69 @@ BEGIN
 	
 	IF (SELECT COUNT(1) FROM @parent) > 0
 		BEGIN
-		DECLARE @currentLevel int;
-		SET @currentLevel = (SELECT MIN(SortOrder) FROM @parent) - 1;
-		WHILE (1 = 1)
-			BEGIN
-			  SELECT @currentLevel = MIN(SortOrder)
-			  FROM @parent WHERE SortOrder > @currentLevel;
-			  IF @currentLevel IS NULL BREAK;
-			  DECLARE @folder NVARCHAR(256);
-			  SELECT @folder = Item FROM @parent WHERE SortOrder = @currentLevel;
-			  IF @parentid IS NULL
-				  BEGIN
-				  SET @parentid = (SELECT TOP 1 stream_id FROM AssetStore WHERE name = @folder AND is_directory = 1 AND parent_path_locator = NULL);
-				  IF @parentid IS NULL
-					  BEGIN
-						SET @parentid = NEWID();
-						INSERT INTO AssetStore (stream_id, name, is_directory) VALUES (@parentid, @folder, 1);
-					  END
-				  END
-			 ELSE
-				  BEGIN
-					DECLARE @path        HIERARCHYID
-					DECLARE @new_path    VARCHAR(675)
-	
-					SELECT @path = path_locator
-						FROM AssetStore
-						WHERE stream_id = @parentid 
 
-					SELECT @new_path = @path.ToString()     +
-						CONVERT(VARCHAR(20), CONVERT(BIGINT, SUBSTRING(CONVERT(BINARY(16), NEWID()), 1, 6))) + '.' +
-						CONVERT(VARCHAR(20), CONVERT(BIGINT, SUBSTRING(CONVERT(BINARY(16), NEWID()), 7, 6))) + '.' +
-						CONVERT(VARCHAR(20), CONVERT(BIGINT, SUBSTRING(CONVERT(BINARY(16), NEWID()), 13, 4))) + '/';	
-						
-					SET @parentid = NEWID();
+		DECLARE @new_path    VARCHAR(675);
+		DECLARE @folder      NVARCHAR(256);
+		DECLARE @parentPath  HIERARCHYID;
 
-					INSERT INTO AssetStore(stream_id, name, path_locator, is_directory)
-					VALUES(@parentid, @folder, @new_path, 1 );											
-				  END
-			END
-	
-			SELECT @path = path_locator
-				FROM AssetStore
-				WHERE stream_id = @parentid 
+		DECLARE crs CURSOR FOR  
+		SELECT Item 
+		FROM @parent 
+		ORDER BY SortOrder;
 
-			SELECT @new_path = @path.ToString()     +
-				CONVERT(VARCHAR(20), CONVERT(BIGINT, SUBSTRING(CONVERT(BINARY(16), NEWID()), 1, 6))) + '.' +
-				CONVERT(VARCHAR(20), CONVERT(BIGINT, SUBSTRING(CONVERT(BINARY(16), NEWID()), 7, 6))) + '.' +
-				CONVERT(VARCHAR(20), CONVERT(BIGINT, SUBSTRING(CONVERT(BINARY(16), NEWID()), 13, 4))) + '/'	
+		OPEN crs   
+		FETCH NEXT FROM crs INTO @folder   
+
+		WHILE @@FETCH_STATUS = 0   
+		BEGIN   
+			IF @parentPath IS NULL
+				BEGIN
+					SET @parentid = (SELECT TOP 1 stream_id FROM AssetStore WHERE name = @folder AND is_directory = 1 AND parent_path_locator IS NULL);
+				END
+			ELSE
+				BEGIN
+					SET @parentid = (SELECT TOP 1 stream_id FROM AssetStore WHERE name = @folder AND is_directory = 1 AND parent_path_locator.ToString() = @parentPath.ToString());
+				END
 			
-			SET @docid  = NEWID();
-			INSERT INTO AssetStore(stream_id, name, file_stream, path_locator)
-			VALUES(@docid, @filename, @filedata, @new_path )
-		END
+			IF @parentid IS NULL
+				BEGIN
+					IF @parentPath IS NULL
+						BEGIN
+							SET @parentid = NEWID();
+							INSERT INTO AssetStore (stream_id, name, is_directory) VALUES (@parentid, @folder, 1);
+							SET @parentPath = (SELECT TOP 1 path_locator FROM AssetStore WHERE stream_id = @parentid);
+						END
+					ELSE
+						BEGIN
+							SELECT @new_path = @parentPath.ToString()     +
+								CONVERT(VARCHAR(20), CONVERT(BIGINT, SUBSTRING(CONVERT(BINARY(16), NEWID()), 1, 6))) + '.' +
+								CONVERT(VARCHAR(20), CONVERT(BIGINT, SUBSTRING(CONVERT(BINARY(16), NEWID()), 7, 6))) + '.' +
+								CONVERT(VARCHAR(20), CONVERT(BIGINT, SUBSTRING(CONVERT(BINARY(16), NEWID()), 13, 4))) + '/';	
+						
+							SET @parentid = NEWID();
+							INSERT INTO AssetStore(stream_id, name, path_locator, is_directory) VALUES(@parentid, @folder, @new_path, 1 );
+							SET @parentPath = (SELECT TOP 1 path_locator FROM AssetStore WHERE stream_id = @parentid);
+						END
+				  END 
+				  ELSE
+					  BEGIN
+						SET @parentPath = (SELECT TOP 1 path_locator FROM AssetStore WHERE stream_id = @parentid);
+					  END
+			FETCH NEXT FROM crs INTO @folder   
+		END   
+
+		CLOSE crs   
+		DEALLOCATE crs
+
+		SELECT @new_path = @parentPath.ToString()     +
+			CONVERT(VARCHAR(20), CONVERT(BIGINT, SUBSTRING(CONVERT(BINARY(16), NEWID()), 1, 6))) + '.' +
+			CONVERT(VARCHAR(20), CONVERT(BIGINT, SUBSTRING(CONVERT(BINARY(16), NEWID()), 7, 6))) + '.' +
+			CONVERT(VARCHAR(20), CONVERT(BIGINT, SUBSTRING(CONVERT(BINARY(16), NEWID()), 13, 4))) + '/';	
+
+		SET @docid  = NEWID();
+		INSERT INTO AssetStore(stream_id, name, file_stream, path_locator)
+		VALUES(@docid, @filename, @filedata, @new_path)            ;
+	END 	
 	ELSE
 		BEGIN
 			SET @docid  = NEWID();

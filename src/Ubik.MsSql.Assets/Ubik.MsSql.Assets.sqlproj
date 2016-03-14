@@ -64,6 +64,7 @@
     <Folder Include="dbo\Stored Procedures\" />
     <Folder Include="dbo\Views\" />
     <Folder Include="dbo\User Defined Types\" />
+    <Folder Include="dbo\Sequences\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\FileTables\AssetStore.sql" />
@@ -77,6 +78,7 @@
     <Build Include="dbo\Stored Procedures\AssetPath.sql" />
     <Build Include="dbo\Views\AssetStoreProjections.sql" />
     <Build Include="dbo\User Defined Types\OrderedStringListType.sql" />
+    <Build Include="dbo\Sequences\Asset.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="LocalCompare.scmp" />
