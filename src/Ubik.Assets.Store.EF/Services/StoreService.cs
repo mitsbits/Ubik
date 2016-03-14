@@ -156,36 +156,39 @@ namespace Ubik.Assets.Store.EF.Services
 
         public async Task<IEnumerable<IAssetInfo<int>>> Projections(IEnumerable<int> ids)
         {
-            var projections = await _projectionsRepo.GetProjections(ids);
-            var collection = new List<IAssetInfo<int>>();
-            foreach (var p in projections)
+            using (_dbContextScopeFactory.CreateReadOnly())
             {
-                var result = new AssetItemInfo<int>
+                var projections = await _projectionsRepo.GetProjections(ids);
+                var collection = new List<IAssetInfo<int>>();
+                foreach (var p in projections)
                 {
-                    Id = p.Id,
-                    Name = p.Name,
-                    State = (AssetState)p.State,
-                    CurrentFile = new VersionItemInfo()
+                    var result = new AssetItemInfo<int>
                     {
-                        Version = p.CurrentVersion,
-                        FileInfo = new FileItemInfo<Guid>()
+                        Id = p.Id,
+                        Name = p.Name,
+                        State = (AssetState)p.State,
+                        CurrentFile = new VersionItemInfo()
                         {
-                            CreationDate = p.creation_time.DateTime,
-                            FileSize = p.cached_file_size.Value,
-                            FileType = p.file_type,
-                            FullPath = p.full_path,
-                            Id = p.stream_id,
-                            IsDirectory = p.is_directory,
-                            LastRead = (p.last_access_time.HasValue) ? p.last_access_time.Value.DateTime : default(DateTime?),
-                            LastWrite = p.last_write_time.DateTime,
-                            MimeType = p.ContentType,
-                            Name = p.FileName
+                            Version = p.CurrentVersion,
+                            FileInfo = new FileItemInfo<Guid>()
+                            {
+                                CreationDate = p.creation_time.DateTime,
+                                FileSize = p.cached_file_size.Value,
+                                FileType = p.file_type,
+                                FullPath = p.full_path,
+                                Id = p.stream_id,
+                                IsDirectory = p.is_directory,
+                                LastRead = (p.last_access_time.HasValue) ? p.last_access_time.Value.DateTime : default(DateTime?),
+                                LastWrite = p.last_write_time.DateTime,
+                                MimeType = p.ContentType,
+                                Name = p.FileName
+                            }
                         }
-                    }
-                };
-                collection.Add(result);
+                    };
+                    collection.Add(result);
+                }
+                return collection;
             }
-            return collection;
         }
     }
 }
