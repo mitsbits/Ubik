@@ -47,9 +47,9 @@ namespace Ubik.Assets.Store.EF
         #region Stored Procedures
         public virtual async Task<Guid> AssetStoreAdd(string parent, string filename, byte[] filedata)
         {
+            var shouldClose = false;
 
-
-            if (Database.Connection.State == ConnectionState.Closed) await Database.Connection.OpenAsync();
+            if (Database.Connection.State == ConnectionState.Closed) { await Database.Connection.OpenAsync(); shouldClose = true; }
             using (var cmd = Database.Connection.CreateCommand())
             {
 
@@ -63,7 +63,7 @@ namespace Ubik.Assets.Store.EF
                 cmd.Parameters.Add(idParam);
 
                 await cmd.ExecuteNonQueryAsync();
-
+                if (shouldClose) cmd.Connection.Close();
                 return Guid.Parse(idParam.Value.ToString());
             }
         }

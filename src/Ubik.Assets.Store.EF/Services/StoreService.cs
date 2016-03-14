@@ -88,5 +88,54 @@ namespace Ubik.Assets.Store.EF.Services
                 return asset;
             }
         }
+
+        public async Task Suspend(int id)
+        {
+            using (var db = _dbContextScopeFactory.Create())
+            {
+                var entity = await _assetRepo.GetAsync(x => x.Id == id);
+                if (entity != null && entity.State != (int)AssetState.Suspended)
+                {
+                    entity.State = (int)AssetState.Suspended;
+                    await db.SaveChangesAsync();
+                }
+            }
+        }
+
+        public async Task Acivate(int id)
+        {
+            using (var db = _dbContextScopeFactory.Create())
+            {
+                var entity = await _assetRepo.GetAsync(x => x.Id == id);
+                if (entity != null && entity.State != (int)AssetState.Active)
+                {
+                    entity.State = (int)AssetState.Suspended;
+                    await db.SaveChangesAsync();
+                }
+            }
+        }
+
+        public async Task<IAssetInfo<int>> AddNewVersion(int id, byte[] content, string fileName)
+        {
+            using (var db = _dbContextScopeFactory.Create())
+            {
+                var entity = await _assetRepo.GetAsync(x => x.Id == id);
+                if (entity != null)
+                {
+                    var asset = new AssetItemInfo<int>() { Id = id, Name = entity.Name, State = (AssetState)entity.State };
+                    var versionInfo = new VersionItemInfo() { Version = entity.CurrentVersion + 1};
+                    var parentDirecotry = _direcotryStartegy.ParentFolder(asset);
+                    var fileInfo = await Upload(content, fileName, parentDirecotry);
+                    var streamId = fileInfo.Id;
+                    versionInfo.FileInfo = fileInfo;
+                    asset.CurrentFile = versionInfo;
+                    entity.CurrentVersion = versionInfo.Version;
+                    entity.Versions.Add(new AssetVersion() { AssetId = asset.Id, StreamId = streamId, Version = versionInfo.Version });
+                    await db.SaveChangesAsync();
+                    return asset;
+                }
+                throw new ApplicationException(string.Format("Asset with id: {0} does not exist.", id));
+            }
+        }
     }
 }
