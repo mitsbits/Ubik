@@ -8,6 +8,6 @@ namespace Ubik.Postal.Contracts
 {
     public interface IEmailService
     {
-        Task SendSingleMail(MailAddress sender, MailAddress recipient, string subject, string body);
+        Task SendSingleMail(MailAddress sender, MailAddress recipient, string subject, string body, IEnumerable<IAttachmentInfo> attachments);
     }
 }
