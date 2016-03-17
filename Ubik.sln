@@ -67,6 +67,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Ubik.Assets.Store.EF", "src
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Ubik.Assets.Store.Core", "src\Ubik.Assets.Store.Core\Ubik.Assets.Store.Core.xproj", "{5EA126F3-A002-4AF7-BBBB-4BE7329C0422}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Ubik.Postal", "src\Ubik.Postal\Ubik.Postal.xproj", "{B37E1028-BFAE-418D-A276-3ED688490EDD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -159,6 +161,10 @@ Global
 		{5EA126F3-A002-4AF7-BBBB-4BE7329C0422}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EA126F3-A002-4AF7-BBBB-4BE7329C0422}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5EA126F3-A002-4AF7-BBBB-4BE7329C0422}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B37E1028-BFAE-418D-A276-3ED688490EDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B37E1028-BFAE-418D-A276-3ED688490EDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B37E1028-BFAE-418D-A276-3ED688490EDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B37E1028-BFAE-418D-A276-3ED688490EDD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -189,5 +195,6 @@ Global
 		{EFA234C0-47E7-40F7-B465-63947D428228} = {14285CEC-1AAE-4496-8C11-64E71D06A77D}
 		{24DD76CB-86FC-4020-98C8-3DF586C2A968} = {EFA234C0-47E7-40F7-B465-63947D428228}
 		{5EA126F3-A002-4AF7-BBBB-4BE7329C0422} = {EFA234C0-47E7-40F7-B465-63947D428228}
+		{B37E1028-BFAE-418D-A276-3ED688490EDD} = {89B75DEC-B400-4694-A82C-8FF4D11F5679}
 	EndGlobalSection
 EndGlobal

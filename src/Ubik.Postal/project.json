@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0-*",
+  "description": "Ubik.Postal Class Library",
+  "authors": [ "mitsbits" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "net46": {
+      "dependencies": {
+        "MailKit": "1.3.0-beta7"
+      }
+    }
+  }
+}
