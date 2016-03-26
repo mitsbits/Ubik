@@ -19,6 +19,7 @@
     "Ubik.Domain.Core": "1.0.0-*",
     "Ubik.EF6": "1.0.0-*",
     "Ubik.Infra": "1.0.0-*",
+    "Ubik.Postal": "1.0.0-*",
     "Ubik.Web.Basis": "1.0.0-*",
     "Ubik.Web.BuildingBlocks": "1.0.0-*",
     "Ubik.Web.Client.Backoffice": "1.0.0-*",

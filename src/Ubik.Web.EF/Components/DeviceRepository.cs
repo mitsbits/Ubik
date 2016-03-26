@@ -39,9 +39,9 @@ namespace Ubik.Web.EF.Components
         {
         }
 
-        public override IEnumerable<Device<int>> Map(IEnumerable<DeviceProjection<int>> projections)
+        protected override IEnumerable<Device<int>> Map(IEnumerable<DeviceProjection<int>> source)
         {
-            return Mapper.Map(projections);
+            return Mapper.Map(source);
         }
     }
 }

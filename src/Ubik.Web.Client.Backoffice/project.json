@@ -13,6 +13,7 @@
     "Ubik.Cache": "1.0.0-*",
     "Ubik.Domain.Core": "1.0.0-*",
     "Ubik.Infra": "1.0.0-*",
+    "Ubik.Postal": "1.0.0-*",
     "Ubik.Web.Basis": "1.0.0-*",
     "Ubik.Web.Components.AntiCorruption": "1.0.0-*",
     "Ubik.Web.Membership": "1.0.0-*"

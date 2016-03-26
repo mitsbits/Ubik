@@ -7,12 +7,12 @@
 
         public MailAddress(string email)
         {
+            if (!email.ValidEmail()) throw new EmailFormatException(email);
             _email = email;
         }
 
-        public MailAddress(string email, string displayName)
+        public MailAddress(string email, string displayName):this(email)
         {
-            _email = email;
             _displayName = displayName;
         }
 

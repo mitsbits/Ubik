@@ -1,81 +1,86 @@
-﻿using Mehdime.Entity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using Ubik.EF6.Contracts;
+using System.Threading.Tasks;
 using Ubik.Infra.Contracts;
+using Ubik.Infra.DataManagement;
 
 namespace Ubik.EF6
 {
-    public abstract class BaseQueryRepository<TEntity, TProjection, TDbContext> : IQueryRepository<TEntity, TProjection>
-        where TEntity : class
-        where TProjection : class
-        where TDbContext : DbContext
+    public abstract class BaseQueryRepository<TProjection, TDbContext> : IQueryRepository<TProjection>
+    where TProjection : class
+    where TDbContext : DbContext
     {
         public abstract TDbContext DbContext { get; }
 
-        public abstract IEnumerable<TEntity> Map(IEnumerable<TProjection> projections);
-
-        public virtual IEnumerable<TEntity> Find(Expression<Func<TProjection, bool>> predicate,
-            Func<TProjection, object> @orderby, bool desc, int pageNumber, int pageSize, out int totalRecords)
+        public async Task<PagedResult<TProjection>> FindAsync(Expression<Func<TProjection, bool>> predicate, IEnumerable<OrderByInfo<TProjection>> orderBy, int pageNumber, int pageSize)
         {
-            var set = DbContext.Set<TProjection>();
-            var q = set.Where(predicate);
-            totalRecords = q.Count();
-
+            var set = DbContext.Set<TProjection>().AsNoTracking();
+            var query = set.Where(predicate);
+            var totalRecords = await query.CountAsync();
             var totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
-
-            if (pageNumber > totalPages)
+            if (pageNumber > totalPages) { pageNumber = totalPages; }
+            if (totalRecords == 0)
+                return new PagedResult<TProjection>(new List<TProjection>(), pageNumber, pageSize, 0);
+            IOrderedQueryable<TProjection> orderedQueryable = null;
+            var orderByInfos = orderBy as OrderByInfo<TProjection>[] ?? orderBy.ToArray();
+            for (var i = 0; i < orderByInfos.Count(); i++)
             {
-                pageNumber = totalPages;
+                var info = orderByInfos[i];
+                if (i == 0)
+                {
+                    orderedQueryable = info.Ascending ? query.OrderBy(info.Property) : query.OrderByDescending(info.Property);
+                }
+                else
+                {
+                    if (orderedQueryable != null)
+                    {
+                        orderedQueryable = info.Ascending ? orderedQueryable.ThenBy(info.Property) : orderedQueryable.OrderByDescending(info.Property);
+                    }
+                }
             }
-            return totalRecords > 0
-                ? Map(!desc
-                    ? q.DefaultIfEmpty().OrderBy(@orderby).Skip((pageNumber - 1) * pageSize).Take(pageSize)
-                    : q.DefaultIfEmpty().OrderByDescending(@orderby).Skip((pageNumber - 1) * pageSize).Take(pageSize))
-                : new List<TEntity>();
+            if (orderedQueryable == null)
+                return new PagedResult<TProjection>(new List<TProjection>(), pageNumber, pageSize, 0);
+
+            var data = await orderedQueryable.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+            return new PagedResult<TProjection>(data, pageNumber, pageSize, totalRecords);
         }
     }
 
-    public abstract class QueryRepository<TEntity, TProjection, TDbContext> :
-        BaseQueryRepository<TEntity, TProjection, TDbContext>,
-        IRepositoryWithContext<TDbContext>
-        where TEntity : class
-        where TProjection : class
-        where TDbContext : DbContext
+    public abstract class BaseQueryRepository<TEntity, TProjection, TDbContext> : BaseQueryRepository<TProjection, TDbContext>, IQueryRepository<TEntity, TProjection>
+    where TEntity : class
+    where TProjection : class
+    where TDbContext : DbContext
     {
-        private readonly IAmbientDbContextLocator _ambientDbContextLocator;
-
-        public override TDbContext DbContext
+        public async Task<IEnumerable<TEntity>> FindMapedAsync(Expression<Func<TProjection, bool>> predicate, IEnumerable<OrderByInfo<TEntity>> orderBy)
         {
-            get
+            var set = DbContext.Set<TProjection>().AsNoTracking();
+            var query = set.Where(predicate);
+            var rows = await query.ToListAsync();
+            var entities = Map(rows).AsQueryable();
+            IOrderedQueryable<TEntity> orderedQueryable = null;
+            var orderByInfos = orderBy as OrderByInfo<TEntity>[] ?? orderBy.ToArray();
+            for (var i = 0; i < orderByInfos.Count(); i++)
             {
-                var dbContext = _ambientDbContextLocator.Get<TDbContext>();
-
-                if (dbContext == null)
-                    throw new InvalidOperationException(
-                        string.Format(@"No ambient DbContext of type {0} found.
-                                        This means that this repository method has been called outside of the scope of a DbContextScope.
-                                        A repository must only be accessed within the scope of a DbContextScope,
-                                        which takes care of creating the DbContext instances that the repositories need and making them available as ambient contexts.
-                                        This is what ensures that, for any given DbContext-derived type, the same instance is used throughout the duration of a business transaction.
-                                        To fix this issue, use IDbContextScopeFactory in your top-level business logic service method to create a DbContextScope that wraps the entire business transaction
-                                        that your service method implements.
-                                        Then access this repository within that scope.
-                                        Refer to the comments in the IDbContextScope.cs file for more details.",
-                            typeof(TDbContext).Name));
-                
-
-                return dbContext;
+                var info = orderByInfos[i];
+                if (i == 0)
+                {
+                    orderedQueryable = info.Ascending ? entities.OrderBy(info.Property) : entities.OrderByDescending(info.Property);
+                }
+                else
+                {
+                    if (orderedQueryable != null)
+                    {
+                        orderedQueryable = info.Ascending ? orderedQueryable.ThenBy(info.Property) : orderedQueryable.OrderByDescending(info.Property);
+                    }
+                }
             }
+            if (orderedQueryable == null) return new List<TEntity>();
+            return await orderedQueryable.ToListAsync();
         }
 
-        protected QueryRepository(IAmbientDbContextLocator ambientDbContextLocator)
-        {
-            if (ambientDbContextLocator == null) throw new ArgumentNullException("ambientDbContextLocator");
-            _ambientDbContextLocator = ambientDbContextLocator;
-        }
+        protected abstract IEnumerable<TEntity> Map(IEnumerable<TProjection> source);
     }
 }

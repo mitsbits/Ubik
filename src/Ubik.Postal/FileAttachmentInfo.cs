@@ -12,10 +12,10 @@ namespace Ubik.Postal
         public FileAttachmentInfo(string path, string contentType, string fileName = "")
         {
             FilePath = path;
-            var mTypes = contentType.Split('/');
+            var mTypes = contentType.Split('\\');
             MediaType = mTypes[0];
             MediaTSubType = mTypes[1];
-            FileName = (string.IsNullOrWhiteSpace(FileName))? Path.GetFileName(path):fileName;
+            FileName = (string.IsNullOrWhiteSpace(fileName))? Path.GetFileName(path):fileName;
         }
 
 

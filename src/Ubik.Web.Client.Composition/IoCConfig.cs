@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using Ubik.Assets.Store.Core.Contracts;
@@ -19,6 +20,9 @@ using Ubik.Cache.Runtime;
 using Ubik.Domain.Core;
 using Ubik.EF6;
 using Ubik.Infra.Contracts;
+using Ubik.Postal;
+using Ubik.Postal.Contracts;
+using Ubik.Postal.Services;
 using Ubik.Web.Basis.Contracts;
 using Ubik.Web.Basis.Services;
 using Ubik.Web.Basis.Services.Accessors;
@@ -80,6 +84,13 @@ namespace Ubik.Web.Client.Composition
             WireUpCms(services);
             WireUpEventHandlers(services);
             WireUpCommandHandlers(services);
+            WireUpPostal(services, configuration);
+        }
+
+        private static void WireUpPostal(IServiceCollection services, IConfigurationRoot configuration)
+        {
+            services.Configure<PostalSettings>(configuration.GetSection("Postal"));
+            services.AddSingleton<IEmailService, SmtpImapEmailService>();
         }
 
         private static void WireUpAssetStore(IServiceCollection services)

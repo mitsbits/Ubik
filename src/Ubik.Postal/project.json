@@ -11,5 +11,8 @@
         "MailKit": "1.3.0-beta7"
       }
     }
+  },
+  "dependencies": {
+    "Microsoft.Extensions.OptionsModel": "1.0.0-rc1-final"
   }
 }
